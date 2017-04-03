@@ -17,7 +17,17 @@
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ListView x:Name="Programm_Listing" Grid.Column="1" Grid.Row="1"/>
+        <ListView ItemsSource="{x:Bind Sourcecode}" Grid.Column="1" Grid.Row="1">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:ProcessorInstruction">
+                    <StackPanel>
+                        <TextBlock Text="{x:Bind Mnemonic}"/>
+                        <TextBlock Text="{x:Bind Operands[0]}"/>
+                        <TextBlock Text="{x:Bind Operands[1]}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar>

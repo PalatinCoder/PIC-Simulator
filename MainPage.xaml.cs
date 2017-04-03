@@ -13,18 +13,21 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Popups;
+using System.Collections.ObjectModel;
 
 // Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x407 dokumentiert.
 
 namespace PIC_Simulator
 {
     /// <summary>
-    /// Eine leere Seite, die eigenständig verwendet oder zu der innerhalb eines Rahmens navigiert werden kann.
+    /// Die Hauptseite des PIC Simulators, auf der das Sourcecode Listing und die Register angezeigt werden.
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public string StatusText = "PIC-Simulator";
 
+        private ObservableCollection<ProcessorInstruction> _sourcecodeListing = new ObservableCollection<ProcessorInstruction>();
+        public ObservableCollection<ProcessorInstruction> Sourcecode { get { return this._sourcecodeListing; } }
+        
         public MainPage()
         {
             this.InitializeComponent();
@@ -35,5 +38,6 @@ namespace PIC_Simulator
             var dialog = new MessageDialog("Hier kommt das PDF.");
             await dialog.ShowAsync();
         }
+
     }
 }
