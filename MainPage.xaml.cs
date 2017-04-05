@@ -13,9 +13,14 @@ namespace PIC_Simulator
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
-        private ObservableCollection<ProcessorInstruction> _sourcecodeListing = new ObservableCollection<ProcessorInstruction>();
-        public ObservableCollection<ProcessorInstruction> Sourcecode { get { return this._sourcecodeListing; } }
+        /// <summary>
+        /// Zur internen Verwendung
+        /// </summary>
+        private ObservableCollection<Instruction> _sourcecodeListing = new ObservableCollection<Instruction>();
+        /// <summary>
+        /// Public und read only, daran ist das ListView gebunden
+        /// </summary>
+        public ObservableCollection<Instruction> Sourcecode { get { return this._sourcecodeListing; } }
         
         public MainPage()
         {
