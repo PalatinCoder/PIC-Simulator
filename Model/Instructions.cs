@@ -1,5 +1,31 @@
 ﻿namespace PIC_Simulator
 {
+    public abstract class Instruction
+    {
+        internal string StringRepresentation;
+
+        public override string ToString()
+        {
+            return this.StringRepresentation;
+        }
+    }
+
+    public class CommentLine : Instruction
+    {
+        public CommentLine(string text)
+        {
+            this.StringRepresentation = text;
+        }
+    }
+
+    /// <summary>
+    /// Klasse um Anweisungen für den Compiler zu beschreiben
+    /// </summary>
+    public class CompilerInstruction : Instruction
+    {
+
+    }
+
     /// <summary>
     /// Klasse um eine Instruction für den µC zu beschreiben
     /// </summary>
