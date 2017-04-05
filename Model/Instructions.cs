@@ -57,7 +57,7 @@
 
         public override string ToString()
         {
-            return this.Mnemonic;
+            return System.String.Format("{0}\t0x{1,2:X},0x{2,2:X}", this.Mnemonic, this.Operands[0], this.Operands[1]);
         }
     }
 }
