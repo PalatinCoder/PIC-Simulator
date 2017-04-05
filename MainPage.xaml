@@ -7,32 +7,34 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="{StaticResource ContentDialogPadding}">
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ListView ItemsSource="{x:Bind Sourcecode}" Grid.Column="1" Grid.Row="1">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:ProcessorInstruction">
-                    <StackPanel>
-                        <TextBlock Text="{x:Bind Mnemonic}"/>
-                        <TextBlock Text="{x:Bind Operands[0]}"/>
-                        <TextBlock Text="{x:Bind Operands[1]}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
+
+        <TextBlock Grid.Row="0" Text="Register" Style="{StaticResource TitleTextBlockStyle}" />
+
+        <TextBlock Grid.Row="2" Text="Programmlisting" Style="{StaticResource TitleTextBlockStyle}" />
+        <ListView ItemsSource="{x:Bind Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="FontFamily" Value="Lucida Console, Consolas, Monospace" />
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
     </Grid>
     <Page.BottomAppBar>
         <CommandBar>
             <CommandBar.Content>
-                <TextBlock Text="Statusbar" x:Name="statusbar" Margin="12,14" />
+                <TextBlock Text="PIC-Simulator" x:Name="statusbar" Margin="12,14" />
             </CommandBar.Content>
             <AppBarButton Icon="Play" Label="Start" IsEnabled="False" />
             <AppBarButton Icon="Stop" Label="Halt" IsEnabled="False" />
