@@ -35,14 +35,48 @@ namespace PIC_Simulator
 
         private async void OpenFileChooser_Click(object sender, RoutedEventArgs e)
         {
-            var picker = new FileOpenPicker();
-            picker.ViewMode = PickerViewMode.List;
+            var picker = new FileOpenPicker()
+            {
+                ViewMode = PickerViewMode.List
+            };
             picker.FileTypeFilter.Add(".LST");
 
             StorageFile file = await picker.PickSingleFileAsync();
 
-            this.statusbar.Text = "Programm " + file.DisplayName + " wird geladen.";
-            // TODO hier das file an den Parser übergeben
+            this.statusbar.Text = "Programm " + file.DisplayName + " wird geöffnet";
+
+            try
+            {
+                await ListingFileParser.Parse(file, SourcecodeLineParsed);
+                this.statusbar.Text = file.DisplayName + " geladen";
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                var dialog = new MessageDialog(
+                    "Beim Einlesen der Datei ist ein Fehler aufgetreten.\r\nMeistens hilft es die Datei nach UTF-8 zu konvertieren",
+                    "Programm kann nicht geladen werden");
+#pragma warning disable CS4014 // Da dieser Aufruf nicht abgewartet wird, wird die Ausführung der aktuellen Methode fortgesetzt, bevor der Aufruf abgeschlossen ist
+                dialog.ShowAsync();
+#pragma warning restore CS4014
+            }
+            catch (Exception ex)
+            {
+                var dialog = new MessageDialog(
+                    "Beim Einlesen der Datei ist ein Fehler aufgetreten:\r\n" + ex.Message,
+                    "Programm kann nicht geladen werden");
+#pragma warning disable CS4014 // Da dieser Aufruf nicht abgewartet wird, wird die Ausführung der aktuellen Methode fortgesetzt, bevor der Aufruf abgeschlossen ist
+                dialog.ShowAsync();
+#pragma warning restore CS4014
+            }
+        }
+
+        /// <summary>
+        /// Callback wenn eine Zeile geparst wurde. Fügt die Instruction dem Listing hinzu.
+        /// </summary>
+        /// <param name="instruction">Die generierte Instruction</param>
+        private void SourcecodeLineParsed(Instruction instruction)
+        {
+            this._sourcecodeListing.Add(instruction);
         }
     }
 }
