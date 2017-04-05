@@ -2,19 +2,27 @@
 {
     public abstract class Instruction
     {
-        internal string StringRepresentation;
-
-        public override string ToString()
-        {
-            return this.StringRepresentation;
-        }
+        /// <summary>
+        /// ToString muss für jede Klasse implementiert werden. 
+        /// Wenn die Instructions im ListView angezeigt werden, wird ToString() aufgerufen
+        /// um die Darstellung der Instruction abzurufen.
+        /// </summary>
+        /// <returns>Menschenlesbare Darstellung der Instruction</returns>
+        public abstract override string ToString();
     }
 
     public class CommentLine : Instruction
     {
+        string text;
+
         public CommentLine(string text)
         {
-            this.StringRepresentation = text;
+            this.text = text;
+        }
+
+        public override string ToString()
+        {
+            return this.text;
         }
     }
 
@@ -23,7 +31,10 @@
     /// </summary>
     public class CompilerInstruction : Instruction
     {
-
+        public override string ToString()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -39,6 +50,11 @@
             this.Mnemonic = mnemonic;
             this.Operands[0] = operand0;
             this.Operands[1] = operand1;
+        }
+
+        public override string ToString()
+        {
+            return this.Mnemonic;
         }
     }
 }
