@@ -11,6 +11,9 @@
         public abstract override string ToString();
     }
 
+    /// <summary>
+    /// Klasse um Kommentare zu beschreiben
+    /// </summary>
     public class CommentLine : Instruction
     {
         string text;
