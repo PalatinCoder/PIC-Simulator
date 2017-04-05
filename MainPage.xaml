@@ -32,11 +32,13 @@
     <Page.BottomAppBar>
         <CommandBar>
             <CommandBar.Content>
-                <TextBlock Text="Statusbar" Margin="12,14" />
+                <TextBlock Text="Statusbar" x:Name="statusbar" Margin="12,14" />
             </CommandBar.Content>
-            <AppBarButton Icon="Play" Label="Start" />
-            <AppBarButton Icon="Stop" Label="Halt" />
-            <AppBarButton Icon="Forward" Label="Schritt" />
+            <AppBarButton Icon="Play" Label="Start" IsEnabled="False" />
+            <AppBarButton Icon="Stop" Label="Halt" IsEnabled="False" />
+            <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="False" />
+            <AppBarSeparator />
+            <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton Icon="Help" Label="Hilfe" Click="HelpButton_Click" />
             </CommandBar.SecondaryCommands>

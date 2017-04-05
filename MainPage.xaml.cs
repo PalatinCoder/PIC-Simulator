@@ -14,8 +14,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Popups;
 using System.Collections.ObjectModel;
-
-// Die Elementvorlage "Leere Seite" wird unter https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x407 dokumentiert.
+using Windows.Storage.Pickers;
+using Windows.Storage;
 
 namespace PIC_Simulator
 {
@@ -39,5 +39,16 @@ namespace PIC_Simulator
             await dialog.ShowAsync();
         }
 
+        private async void OpenFileChooser_Click(object sender, RoutedEventArgs e)
+        {
+            var picker = new FileOpenPicker();
+            picker.ViewMode = PickerViewMode.List;
+            picker.FileTypeFilter.Add(".LST");
+
+            StorageFile file = await picker.PickSingleFileAsync();
+
+            this.statusbar.Text = "Programm " + file.DisplayName + " wird geladen.";
+            // TODO hier das file an den Parser übergeben
+        }
     }
 }
