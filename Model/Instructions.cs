@@ -1,9 +1,9 @@
 ﻿namespace PIC_Simulator
 {
     /// <summary>
-    /// Basisklasse um eine Instruction für den µC zu beschreiben
+    /// Klasse um eine Instruction für den µC zu beschreiben
     /// </summary>
-    public class ProcessorInstruction
+    public class ProcessorInstruction : Instruction
     {
         public string Mnemonic { get; }
         public int[] Operands { get; } = new int[2];
