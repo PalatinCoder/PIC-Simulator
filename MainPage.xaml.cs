@@ -79,4 +79,15 @@ namespace PIC_Simulator
             this._sourcecodeListing.Add(instruction);
         }
     }
+
+    public class InstructionTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate ProcessorInstructionTemplate { get; set; }
+        public DataTemplate GeneralInstructionTemplate { get; set; }
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            if (item is ProcessorInstruction) return ProcessorInstructionTemplate;
+            else return GeneralInstructionTemplate;
+        }
+    }
 }

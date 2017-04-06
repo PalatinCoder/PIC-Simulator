@@ -7,6 +7,19 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <DataTemplate x:Key="ProcessorInstructionTemplate">
+            <StackPanel Orientation="Horizontal">
+                <ToggleButton />
+                <TextBlock Text="{Binding}" FontFamily="Lucida Console, Consolas, Monospace" Margin="10,0,0,0" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="GeneralInstructionTemplate">
+            <TextBlock Text="{Binding}" FontFamily="Lucida Console, Consolas, Monospace" Margin="30,0,0,0" />
+        </DataTemplate>
+        <local:InstructionTemplateSelector x:Key="InstructionTemplateSelector" ProcessorInstructionTemplate="{StaticResource ProcessorInstructionTemplate}" GeneralInstructionTemplate="{StaticResource GeneralInstructionTemplate}" />
+    </Page.Resources>
+
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="{StaticResource ContentDialogPadding}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -23,13 +36,7 @@
         <TextBlock Grid.Row="0" Text="Register" Style="{StaticResource TitleTextBlockStyle}" />
 
         <TextBlock Grid.Row="2" Text="Programmlisting" Style="{StaticResource TitleTextBlockStyle}" />
-        <ListView ItemsSource="{x:Bind Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="FontFamily" Value="Lucida Console, Consolas, Monospace" />
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
+        <ListView ItemsSource="{x:Bind Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemTemplateSelector="{StaticResource InstructionTemplateSelector}" />
     </Grid>
     <Page.BottomAppBar>
         <CommandBar>
