@@ -15,7 +15,7 @@ namespace PIC_Simulator
         /// Parst das angegebene Textfile
         /// </summary>
         /// <param name="file">fileobjekt</param>
-        /// <param name="lineParsedCallback">Callback when a line was parsed to an instruction</param>
+        /// <param name="lineParsedCallback">Callback wenn eine Zeile geparst wurde</param>
         /// <returns>Collection von Instructions</returns>
         public static async Task Parse(StorageFile file, Action<Instruction> lineParsedCallback)
         {
