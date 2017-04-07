@@ -1,63 +1,52 @@
 ﻿namespace PIC_Simulator
 {
-    public abstract class Instruction
+    /// <summary>
+    /// Basisklasse um Instructions zu beschreiben
+    /// </summary>
+    public class Instruction
     {
         /// <summary>
-        /// ToString muss für jede Klasse implementiert werden. 
+        /// Die Sourcecode Zeile
+        /// </summary>
+        private string Value;
+
+        /// <summary>
+        /// Die Zeilennummer in der diese Instruction im Sourcecode Listing steht
+        /// Wird abgerufen, um die Zeile zu markieren falls ein Breakpoint gehittet wird
+        /// oder nach einem Jump
+        /// </summary>
+        public int LineNumber { get; }
+
+        public Instruction(int line, string value)
+        {
+            this.Value = value;
+            this.LineNumber = line;
+        }
+
+        /// <summary> 
         /// Wenn die Instructions im ListView angezeigt werden, wird ToString() aufgerufen
         /// um die Darstellung der Instruction abzurufen.
         /// </summary>
         /// <returns>Menschenlesbare Darstellung der Instruction</returns>
-        public abstract override string ToString();
-    }
-
-    /// <summary>
-    /// Klasse um Kommentare zu beschreiben
-    /// </summary>
-    public class CommentLine : Instruction
-    {
-        string text;
-
-        public CommentLine(string text)
-        {
-            this.text = text;
-        }
-
         public override string ToString()
         {
-            return this.text;
+            return this.Value;
         }
     }
 
     /// <summary>
-    /// Klasse um Anweisungen für den Compiler zu beschreiben
-    /// </summary>
-    public class CompilerInstruction : Instruction
-    {
-        public override string ToString()
-        {
-            throw new System.NotImplementedException();
-        }
-    }
-
-    /// <summary>
-    /// Klasse um eine Instruction für den µC zu beschreiben
+    /// Spezielle Klasse um eine Instruction für den µC zu beschreiben
     /// </summary>
     public class ProcessorInstruction : Instruction
     {
-        public string Mnemonic { get; }
-        public int[] Operands { get; } = new int[2];
+        /// <summary>
+        /// Der 14bit Opcode der Instruction (Datentyp unsigned short ^= 16 bit)
+        /// </summary>
+        public ushort Opcode { get; }
 
-        public ProcessorInstruction(string mnemonic, int operand0 = 0, int operand1 = 0)
+        public ProcessorInstruction(int line, string value, ushort opcode) : base(line, value)
         {
-            this.Mnemonic = mnemonic;
-            this.Operands[0] = operand0;
-            this.Operands[1] = operand1;
-        }
-
-        public override string ToString()
-        {
-            return System.String.Format("{0}\t0x{1,2:X},0x{2,2:X}", this.Mnemonic, this.Operands[0], this.Operands[1]);
+            this.Opcode = opcode;
         }
     }
 }
