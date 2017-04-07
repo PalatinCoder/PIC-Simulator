@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Storage;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace PIC_Simulator
 {
     /// <summary>
-    /// Parst die Textfiles und setzt sie in die jeweiligen Instructions um
+    /// Ein einfacher Parser mit Regex. Es wird unterschieden zwischen Zeilen, die einen
+    /// Opcode enthalten, und dem Rest. Ist ein Opcode vorhanden, wird eine Instanz der
+    /// ProcessorInstruction mit den entsprechenden Werten aus dem Regex Match erstellt    /// 
     /// </summary>
     class ListingFileParser
     {
@@ -36,17 +39,18 @@ namespace PIC_Simulator
         /// <returns>Instruction|null</returns>
         private static Instruction ParseLine(String line)
         {
-            /*
-             * Index,Länge   Inhalt
-             * 0,4           LfdNr Zeile mit Ops
-             * 5,4           Op als Byte (hex)
-             * 20,5          LfdNr
-             * 27,9 oder *   Label
-             * 36,*          Payload
-             */
+            // Pattern für Zeilen die Opcodes enthalten: 
+            // Adresse | Opcode | Zeilennummer | Rest
+            Regex ProcessorInstructionPattern = new Regex("^([0-9]{4}) ([0-9A-F]{4}) * ([0-9]{5}) (.*)$");
+            Match m = ProcessorInstructionPattern.Match(line);
+            if (m.Success)
+            // Opcode gefunden
+                return new ProcessorInstruction(int.Parse(m.Groups[3].Value), m.Groups[4].Value, ushort.Parse(m.Groups[2].Value, System.Globalization.NumberStyles.HexNumber));
 
-
-            return null;
+            Regex InstructionPattern = new Regex("^ * ([0-9]{5}) (.*)$");
+            Match i = InstructionPattern.Match(line);
+            // alles andere
+            return new Instruction(int.Parse(i.Groups[1].Value), i.Groups[2].Value);
         }
     }
 }
