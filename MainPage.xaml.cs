@@ -98,6 +98,16 @@ namespace PIC_Simulator
         {
             this.processor.Step();
         }
+
+        private void RunButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.processor.Run();
+        }
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Stop or Reset?
+        }
     }
 
     public class InstructionTemplateSelector : DataTemplateSelector

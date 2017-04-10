@@ -47,8 +47,8 @@
             <CommandBar.Content>
                 <TextBlock Text="PIC-Simulator" x:Name="statusbar" Margin="12,14" />
             </CommandBar.Content>
-            <AppBarButton Icon="Play" Label="Start" IsEnabled="False" />
-            <AppBarButton Icon="Stop" Label="Halt" IsEnabled="False" />
+            <AppBarButton Icon="Play" Label="Start" IsEnabled="False" x:Name="RunButton" Click="RunButton_Click" />
+            <AppBarButton Icon="Stop" Label="Halt" IsEnabled="False" x:Name="StopButton" Click="StopButton_Click" />
             <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="False" x:Name="StepButton" Click="StepButton_Click" />
             <AppBarSeparator />
             <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" />
