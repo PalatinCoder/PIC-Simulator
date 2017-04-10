@@ -1,0 +1,61 @@
+Insgesamt gibt es 35 OPCodes:
+-----------------------------
+
+Mnemonic	OPCode		Binärer OPCode			Beschreibung							Was muss im Programm passieren							Erklärung der Punkte in OPCodes
+
+ADDWF	-	0x07.f	-	0000 0111 dfff ffff	-	Add W and f							->	'w + f -> d; CheckZero; CheckCarry; CheckDC' 			|| . = dfff (b)
+ANDWF	-	0x05.f	-	0000 0101 dfff ffff	-	AND W with f						->	'w and f -> d; CheckZero' 								|| . = dfff (b)
+CLRF	-	0x01.f	-	0000 0001 1fff ffff	-	Clear f								->	'0x00 -> f; 1 -> Z' 									|| . = 1fff (b)
+CLRW	-	0x01.x	-	0000 0001 0xxx xxxx	-	Clear W								->	'0x00 -> w; 1 -> Z' 									|| . = 0xxx (b)
+COMF	-	0x09.f	-	0000 1001 dfff ffff	-	Complement f						->	'invertiere f -> d; CheckZero'							|| . = dfff (b)
+DECF	-	0x03.f	-	0000 0011 dfff ffff	-	Decrement f							->	'f - 1 -> d; CheckZero' 								|| . = dfff (b)
+DECFSZ	-	0x0B.f	-	0000 1011 dfff ffff	-	Decrement f, Skip if 0				->	'f - 1 -> d (wenn result != 0)' 						|| . = dfff (b)
+INCF	-	0x0A.f	-	0000 1010 dfff ffff	-	Increment f							->	'f + 1 -> d; CheckZero' 								|| . = dfff (b)
+INCFSZ	-	0x0F.f	-	0000 1111 dfff ffff	-	Increment f, Skip if 0				->	'f + 1 -> d (wenn result != 0)' 						|| . = dfff (b)
+IORWF	-	0x04.f	-	0000 0100 dfff ffff	-	Inclusive OR W with f				->	'w or f -> d; CheckZero' 								|| . = dfff (b)
+MOVF	-	0x08.f	-	0000 1000 dfff ffff	-	Move f								->	'f -> d; CheckZero' 									|| . = dfff (b)
+MOVWF	-	0x00.f	-	0000 0000 1fff ffff	-	Move W to f							->	'w -> f' 												|| . = 1fff (b)
+NOP		-	0x00.0	-	0000 0000 0xx0 0000	-	No Operation						->	'Keine Operation' 										|| . = 0xx0 (b)
+RLF		-	0x0E.f	-	0000 1101 dfff ffff	-	Rotate Left f through Carry			->	'Bits von f nach l. rot.; 1 -> C (wenn Bit 7 = 1 war)'	|| . = dfff (b)
+RRF		-	0x0C.f	-	0000 1100 dfff ffff	-	Rotate Right f through Carry		->	'Bits von f nach r. rot.; 1 -> C (wenn Bit 0 = 1 war)'	|| . = dfff (b)
+SUBWF	-	0x02.f	-	0000 0010 dfff ffff	-	Subtract W from f					->	'f - w -> d; Wenn w > f: 1 -> C/DC; Wenn w = f: 1 -> Z' || . = dfff (b)
+SWAPF	-	0x0E.f	-	0000 1110 dfff ffff	-	Swap nibbles in f					->	'Tausche untere/obere 4 Bit von f -> d' 				|| . = dfff (b)
+XORWF	-	0x06.f	-	0000 0110 dfff ffff	-	Exclusive OR W with f				->	'w xor f -> d; CheckZero'								|| . = dfff (b)
+
+BCF		-	0x1..f	-	0001 00bb bfff ffff	-	Bit clear file (set Bit b to 0)		->	'0 -> f (Bit b)'										|| . = 00bb bfff (b)
+BSF		-	0x1..f	-	0001 01bb bfff ffff	-	Bit set file ( set Bit b to 1)		->	'1 -> f (Bit b)'										|| . = 01bb bfff (b)
+BTFSC	-	0x1..f	-	0001 10bb bfff ffff	-	Bit Test, Skip if Clear				->	'if b = 1: PC += 1; else PC += 2'						|| . = 10bb bfff (b)
+BTFSS	-	0x1..f	-	0001 11bb bfff ffff	-	Bit Test f, Skip if set				->	'if b = 0: PC += 1; else PC += 2'						|| . = 11bb bfff (b)
+
+ADDLW	-	0x3.kk	-	0011 111x kkkk kkkk	-	Add literal and WDT					->	'w + k -> w; CheckZero; CheckCarry, CheckDC' 			||  . = 111x (b)
+ANDLW	-	0x39kk	-	0011 1001 kkkk kkkk	-	AND literal (k) with W				->	'w and k -> w; CheckZero'
+CALL	-	0x2.kk	-	0010 0kkk kkkk kkkk	-	Call subroutine						->	'PC + 1 -> TOS; k -> PC (Bits 0-10); PCLATH (Bits 3-4) -> PC (Bits 11-12)'	||	. = 0kkk (b)
+CLRWDT	-	0x0064	-	0000 0000 0110 0100	-	Clear Watchdog Timer				->	'0x00 -> WDT; 0 -> WDT prescaler; 1 -> TO; 1 -> PD'
+GOTO	-	0x2.kk	-	0010 1kkk kkkk kkkk	-	Go to address						->	'k -> PC (Bits 0-10); PCLATH (Bits 3-4) -> PC (11-12)'	|| . = 1kkk (b)
+IORLW	-	0x38kk	-	0011 1000 kkkk kkkk	-	Inclusive OR literal (k) with W		->	'w or k -> w; CheckZero'
+MOVLW	-	0x3.kk	-	0011 00xx kkkk kkkk	-	Move literal (k) to W				->	'k -> w'												|| . = 00xx (b) -> 0x30kk, 0x31kk, 0x32kk, 0x33kk
+RETFIE	-	0x0009	-	0000 0000 0000 1001	-	Return from interrupt				->	'TOS -> PC; 1 -> GIE'
+RETLW	-	0x3.kk	-	0011 01xx kkkk kkkk	-	Return with literal (k) in W		->	'k -> w; TOS -> PC'										|| . = 01xx (b) -> 0x34kk, 0x35kk, 0x36kk, 0x37kk
+RETURN	-	0x0008	-	0000 0000 0000 1000	-	Return from subroutine				->	'TOS -> PC' 
+SLEEP	-	0x0063	-	0000 0000 0110 0011	-	Go into standby mode				->	'0x00 -> WDT; 0 -> WDT prescaler; 1 -> TO; 0 -> PD'
+SUBLW	-	0x3Ckk	-	0011 1100 kkkk kkkk	-	Subtract W from literal (k)			->	'k - w -> w; Wenn w > k: 1 -> C; Wenn w = k: 1 -> Z; CheckDC'
+XORLW	-	0x3Akk	-	0011 1010 kkkk kkkk	-	Exclusive OR literal (k) with W		->	'w xor k -> w; CheckZero'
+
+Variablen:
+x -> Kann 1 oder 0 sein.
+k -> Literaler Wert
+f -> Wert aus Register an Adresse f
+d -> Statusbit, das Speicherort der Operation bestimmt. (wenn d = 0 -> w ; wenn d = 1 -> f)
+CheckZero -> Wenn result = 0: 1 -> Z
+CheckCarry -> Wenn overflow: 1 -> C
+
+Spezielle Register:
+TOS	= Top of Stack
+PC	= Program Counter (untere 8 Bit im PCL Register [0x02])
+C	= Carry bit - Statusbit 0 im STATUS Register (0x03)
+DC	= Digit carry bit - Statusbit 1 im STATUS Register (0x03)
+Z	= Zero bit - Statusbit 2 im STATUS Register (0x03)
+PD	= Power-down bit - Statusbit 3 im STATUS Register (0x03)
+TO	= Time-out bit - Statusbit 4 im STATUS Register (0x03)
+GIE	= Global Interrupt Enable bit - Statusbit 7 im INTCON Register (0x0B)
+W	= Workingregister
