@@ -11,7 +11,7 @@ namespace PIC_Simulator
     /// <summary>
     /// Die Hauptseite des PIC Simulators, auf der das Sourcecode Listing und die Register angezeigt werden.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, ISourcecodeViewInterface 
     {
         /// <summary>
         /// Zur internen Verwendung
@@ -21,10 +21,13 @@ namespace PIC_Simulator
         /// Public und read only, daran ist das ListView gebunden
         /// </summary>
         public ObservableCollection<Instruction> Sourcecode { get { return this._sourcecodeListing; } }
+
+        private Processor processor;
         
         public MainPage()
         {
             this.InitializeComponent();
+            processor = new Processor(this);
         }
 
         private async void HelpButton_Click(object sender, RoutedEventArgs e)
@@ -47,7 +50,9 @@ namespace PIC_Simulator
 
             try
             {
+                this.processor.ProgramMemory.Clear();
                 await ListingFileParser.Parse(file, SourcecodeLineParsed);
+                this.processor.Reset();
                 this.statusbar.Text = file.DisplayName + " geladen";
             }
             catch (ArgumentOutOfRangeException)
@@ -79,6 +84,12 @@ namespace PIC_Simulator
         private void SourcecodeLineParsed(Instruction instruction)
         {
             this._sourcecodeListing.Add(instruction);
+            if (instruction is ProcessorInstruction) processor.ProgramMemory.Add((ProcessorInstruction)instruction);
+        }
+
+        public void SetCurrentSourcecodeLine(int line)
+        {
+            this.SourcecodeListingView.SelectedIndex = line;
         }
     }
 
