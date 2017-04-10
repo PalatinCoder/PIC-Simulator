@@ -40,7 +40,7 @@
         <TextBlock Grid.Row="0" Text="Register" Style="{StaticResource TitleTextBlockStyle}" />
 
         <TextBlock Grid.Row="2" Text="Programmlisting" Style="{StaticResource TitleTextBlockStyle}" />
-        <ListView ItemsSource="{x:Bind Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemTemplateSelector="{StaticResource InstructionTemplateSelector}" />
+        <ListView ItemsSource="{x:Bind Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemTemplateSelector="{StaticResource InstructionTemplateSelector}" SelectionMode="None" />
     </Grid>
     <Page.BottomAppBar>
         <CommandBar>
