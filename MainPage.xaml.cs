@@ -59,6 +59,7 @@ namespace PIC_Simulator
                 dialog.ShowAsync();
 #pragma warning restore CS4014
             }
+#if !DEBUG
             catch (Exception ex)
             {
                 var dialog = new MessageDialog(
@@ -68,6 +69,7 @@ namespace PIC_Simulator
                 dialog.ShowAsync();
 #pragma warning restore CS4014
             }
+#endif
         }
 
         /// <summary>
