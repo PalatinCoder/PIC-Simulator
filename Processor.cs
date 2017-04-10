@@ -24,7 +24,7 @@ namespace PIC_Simulator
         public void Step()
         {
             this.pc++;
-            ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[pc].LineNumber);
+            ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[pc].LineNumber - 1);
         }
         
         internal void Reset()

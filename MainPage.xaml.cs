@@ -91,6 +91,7 @@ namespace PIC_Simulator
         public void SetCurrentSourcecodeLine(int line)
         {
             this.SourcecodeListingView.SelectedIndex = line;
+            this.SourcecodeListingView.ScrollIntoView(this.SourcecodeListingView.SelectedItem, ScrollIntoViewAlignment.Leading);
         }
 
         private void StepButton_Click(object sender, RoutedEventArgs e)
