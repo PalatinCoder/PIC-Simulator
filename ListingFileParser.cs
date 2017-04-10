@@ -23,7 +23,6 @@ namespace PIC_Simulator
         public static async Task Parse(StorageFile file, Action<Instruction> lineParsedCallback)
         {
             IList<String> listing = await FileIO.ReadLinesAsync(file);
-            Collection<Instruction> programm = new Collection<Instruction>();
 
             foreach (String line in listing)
             {
