@@ -54,6 +54,7 @@ namespace PIC_Simulator
                 await ListingFileParser.Parse(file, SourcecodeLineParsed);
                 this.processor.Reset();
                 this.statusbar.Text = file.DisplayName + " geladen";
+                this.StepButton.IsEnabled = true;
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -90,6 +91,11 @@ namespace PIC_Simulator
         public void SetCurrentSourcecodeLine(int line)
         {
             this.SourcecodeListingView.SelectedIndex = line;
+        }
+
+        private void StepButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.processor.Step();
         }
     }
 

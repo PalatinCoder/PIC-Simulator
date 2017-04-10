@@ -49,7 +49,7 @@
             </CommandBar.Content>
             <AppBarButton Icon="Play" Label="Start" IsEnabled="False" />
             <AppBarButton Icon="Stop" Label="Halt" IsEnabled="False" />
-            <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="False" />
+            <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="False" x:Name="StepButton" Click="StepButton_Click" />
             <AppBarSeparator />
             <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" />
             <CommandBar.SecondaryCommands>
