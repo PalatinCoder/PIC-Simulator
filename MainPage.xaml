@@ -11,11 +11,15 @@
         <DataTemplate x:Key="ProcessorInstructionTemplate">
             <StackPanel Orientation="Horizontal">
                 <ToggleButton />
-                <TextBlock Text="{Binding}" FontFamily="Lucida Console, Consolas, Monospace" Margin="10,0,0,0" />
+                <TextBlock Text="{Binding LineNumber}" Width="30" Margin="10,0,0,0" />
+                <TextBlock Text="{Binding}" FontFamily="Lucida Console, Consolas, Monospace" Foreground="#FF1134D3"/>
             </StackPanel>
         </DataTemplate>
         <DataTemplate x:Key="GeneralInstructionTemplate">
-            <TextBlock Text="{Binding}" FontFamily="Lucida Console, Consolas, Monospace" Margin="30,0,0,0" />
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding LineNumber}" Margin="30,0,0,0" Width="30" />
+                <TextBlock Text="{Binding}" FontFamily="Lucida Console, Consolas, Monospace" Foreground="#FF454545" />
+            </StackPanel>
         </DataTemplate>
         <local:InstructionTemplateSelector x:Key="InstructionTemplateSelector" ProcessorInstructionTemplate="{StaticResource ProcessorInstructionTemplate}" GeneralInstructionTemplate="{StaticResource GeneralInstructionTemplate}" />
     </Page.Resources>
@@ -23,9 +27,9 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="{StaticResource ContentDialogPadding}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.3*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.7*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
