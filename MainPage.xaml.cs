@@ -112,15 +112,4 @@ namespace PIC_Simulator
             // Stop or Reset?
         }
     }
-
-    public class InstructionTemplateSelector : DataTemplateSelector
-    {
-        public DataTemplate ProcessorInstructionTemplate { get; set; }
-        public DataTemplate GeneralInstructionTemplate { get; set; }
-        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
-        {
-            if (item is ProcessorInstruction) return ProcessorInstructionTemplate;
-            else return GeneralInstructionTemplate;
-        }
-    }
 }
