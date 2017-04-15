@@ -5,29 +5,50 @@ using Windows.UI.Popups;
 using System.Collections.ObjectModel;
 using Windows.Storage.Pickers;
 using Windows.Storage;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace PIC_Simulator
 {
     /// <summary>
     /// Die Hauptseite des PIC Simulators, auf der das Sourcecode Listing und die Register angezeigt werden.
     /// </summary>
-    public sealed partial class MainPage : Page, ISourcecodeViewInterface 
+    public sealed partial class MainPage : Page, ISourcecodeViewInterface, INotifyPropertyChanged 
     {
         /// <summary>
         /// Zur internen Verwendung
         /// </summary>
         private ObservableCollection<Instruction> _sourcecodeListing = new ObservableCollection<Instruction>();
         /// <summary>
+        /// Zur internen Verwendung
+        /// </summary>
+        private bool _isProgramRunning = false;
+
+        /// <summary>
         /// Public und read only, daran ist das ListView gebunden
         /// </summary>
         public ObservableCollection<Instruction> Sourcecode { get { return this._sourcecodeListing; } }
 
         private Processor processor;
+
+        public bool IsProgramRunning
+        {
+            get { return this._isProgramRunning; }
+            private set { this._isProgramRunning = value; this.OnPropertyChanged(); }
+        }
         
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+
         public MainPage()
         {
             this.InitializeComponent();
             processor = new Processor(this);
+        }
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private async void HelpButton_Click(object sender, RoutedEventArgs e)
@@ -57,7 +78,6 @@ namespace PIC_Simulator
                 await ListingFileParser.Parse(file, SourcecodeLineParsed);
                 this.processor.Reset();
                 this.statusbar.Text = file.DisplayName + " geladen";
-                this.StepButton.IsEnabled = true;
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -104,12 +124,13 @@ namespace PIC_Simulator
 
         private void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            this.processor.Run();
+            this.IsProgramRunning = true;
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             // Stop or Reset?
+            this.IsProgramRunning = false;
         }
     }
 }

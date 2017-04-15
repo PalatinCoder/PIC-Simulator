@@ -22,6 +22,7 @@
             </StackPanel>
         </DataTemplate>
         <local:InstructionTemplateSelector x:Key="InstructionTemplateSelector" ProcessorInstructionTemplate="{StaticResource ProcessorInstructionTemplate}" GeneralInstructionTemplate="{StaticResource GeneralInstructionTemplate}" />
+        <local:InverseBooleanConverter x:Key="InverseBoolean" />
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="{StaticResource ContentDialogPadding}">
@@ -47,11 +48,11 @@
             <CommandBar.Content>
                 <TextBlock Text="PIC-Simulator" x:Name="statusbar" Margin="12,14" />
             </CommandBar.Content>
-            <AppBarButton Icon="Play" Label="Start" IsEnabled="False" x:Name="RunButton" Click="RunButton_Click" />
-            <AppBarButton Icon="Stop" Label="Halt" IsEnabled="False" x:Name="StopButton" Click="StopButton_Click" />
-            <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="False" x:Name="StepButton" Click="StepButton_Click" />
+            <AppBarButton Icon="Play" Label="Start" IsEnabled="{x:Bind IsProgramRunning, Mode=OneWay, Converter={StaticResource InverseBoolean}}" Click="RunButton_Click" />
+            <AppBarButton Icon="Stop" Label="Stop" IsEnabled="{x:Bind IsProgramRunning, Mode=OneWay}" Click="StopButton_Click" />
+            <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="{x:Bind IsProgramRunning, Mode=OneWay, Converter={StaticResource InverseBoolean}}" Click="StepButton_Click" />
             <AppBarSeparator />
-            <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" />
+            <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" IsEnabled="{x:Bind IsProgramRunning, Mode=OneWay, Converter={StaticResource InverseBoolean}}" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton Icon="Help" Label="Hilfe" Click="HelpButton_Click" />
             </CommandBar.SecondaryCommands>
