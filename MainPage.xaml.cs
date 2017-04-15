@@ -46,11 +46,14 @@ namespace PIC_Simulator
 
             StorageFile file = await picker.PickSingleFileAsync();
 
+            if (file == null) return; // Benutzer hat abbrechen gedrückt
+
             this.statusbar.Text = "Programm " + file.DisplayName + " wird geöffnet";
 
             try
             {
                 this.processor.ProgramMemory.Clear();
+                this._sourcecodeListing.Clear();
                 await ListingFileParser.Parse(file, SourcecodeLineParsed);
                 this.processor.Reset();
                 this.statusbar.Text = file.DisplayName + " geladen";
