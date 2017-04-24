@@ -45,6 +45,12 @@ namespace PIC_Simulator
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
         }
 
+        /// <summary>
+        /// Diese Routine dekodiert den aktuellen Befehl und ruft die entsprechende
+        /// Subroutine zur Ausführung des Maschinenbefehls auf.
+        /// Zur Dekodierung werden die pro Maschinenbefehl ausschlaggebenden Bits maskiert
+        /// und gemäß Datenblatt auf ihren Wert geprüft.
+        /// </summary>
         private void Decode()
         {
             ushort opcode = this.ProgramMemory[pc].Opcode;
