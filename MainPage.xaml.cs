@@ -13,42 +13,18 @@ namespace PIC_Simulator
     /// <summary>
     /// Die Hauptseite des PIC Simulators, auf der das Sourcecode Listing und die Register angezeigt werden.
     /// </summary>
-    public sealed partial class MainPage : Page, ISourcecodeViewInterface, INotifyPropertyChanged 
+    public sealed partial class MainPage : Page, ISourcecodeViewInterface
     {
-        /// <summary>
-        /// Zur internen Verwendung
-        /// </summary>
-        private ObservableCollection<Instruction> _sourcecodeListing = new ObservableCollection<Instruction>();
-        /// <summary>
-        /// Zur internen Verwendung
-        /// </summary>
-        private bool _isProgramRunning = false;
-
-        /// <summary>
-        /// Public und read only, daran ist das ListView gebunden
-        /// </summary>
-        public ObservableCollection<Instruction> Sourcecode { get { return this._sourcecodeListing; } }
+        private MainPageViewModel ViewModel;
 
         private Processor processor;
-
-        public bool IsProgramRunning
-        {
-            get { return this._isProgramRunning; }
-            private set { this._isProgramRunning = value; this.OnPropertyChanged(); }
-        }
-        
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
 
         public MainPage()
         {
             this.InitializeComponent();
-            processor = new Processor(this);
-        }
-
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            this.processor = new Processor(this);
+            this.ViewModel = new MainPageViewModel();
+            this.DataContext = this.ViewModel;
         }
 
         private async void HelpButton_Click(object sender, RoutedEventArgs e)
@@ -74,7 +50,7 @@ namespace PIC_Simulator
             try
             {
                 this.processor.ProgramMemory.Clear();
-                this._sourcecodeListing.Clear();
+                this.ViewModel.Sourcecode.Clear();
                 await ListingFileParser.Parse(file, SourcecodeLineParsed);
                 this.processor.Reset();
                 this.statusbar.Text = file.DisplayName + " geladen";
@@ -107,7 +83,7 @@ namespace PIC_Simulator
         /// <param name="instruction">Die generierte Instruction</param>
         private void SourcecodeLineParsed(Instruction instruction)
         {
-            this._sourcecodeListing.Add(instruction);
+            this.ViewModel.Sourcecode.Add(instruction);
             if (instruction is ProcessorInstruction) processor.ProgramMemory.Add((ProcessorInstruction)instruction);
         }
 
@@ -124,13 +100,13 @@ namespace PIC_Simulator
 
         private void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            this.IsProgramRunning = true;
+            this.ViewModel.IsProgramRunning = true;
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             // Stop or Reset?
-            this.IsProgramRunning = false;
+            this.ViewModel.IsProgramRunning = false;
         }
     }
 }

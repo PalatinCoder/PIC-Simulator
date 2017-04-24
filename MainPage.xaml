@@ -41,18 +41,18 @@
         <TextBlock Grid.Row="0" Text="Register" Style="{StaticResource TitleTextBlockStyle}" />
 
         <TextBlock Grid.Row="2" Text="Programmlisting" Style="{StaticResource TitleTextBlockStyle}" />
-        <ListView x:Name="SourcecodeListingView" ItemsSource="{x:Bind Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemTemplateSelector="{StaticResource InstructionTemplateSelector}" />
+        <ListView x:Name="SourcecodeListingView" ItemsSource="{Binding Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemTemplateSelector="{StaticResource InstructionTemplateSelector}" />
     </Grid>
     <Page.BottomAppBar>
         <CommandBar>
             <CommandBar.Content>
                 <TextBlock Text="PIC-Simulator" x:Name="statusbar" Margin="12,14" />
             </CommandBar.Content>
-            <AppBarButton Icon="Play" Label="Start" IsEnabled="{x:Bind IsProgramRunning, Mode=OneWay, Converter={StaticResource InverseBoolean}}" Click="RunButton_Click" />
-            <AppBarButton Icon="Stop" Label="Stop" IsEnabled="{x:Bind IsProgramRunning, Mode=OneWay}" Click="StopButton_Click" />
-            <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="{x:Bind IsProgramRunning, Mode=OneWay, Converter={StaticResource InverseBoolean}}" Click="StepButton_Click" />
+            <AppBarButton Icon="Play" Label="Start" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" Click="RunButton_Click" />
+            <AppBarButton Icon="Stop" Label="Stop" IsEnabled="{Binding IsProgramRunning}" Click="StopButton_Click" />
+            <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" Click="StepButton_Click" />
             <AppBarSeparator />
-            <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" IsEnabled="{x:Bind IsProgramRunning, Mode=OneWay, Converter={StaticResource InverseBoolean}}" />
+            <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton Icon="Help" Label="Hilfe" Click="HelpButton_Click" />
             </CommandBar.SecondaryCommands>

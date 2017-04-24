@@ -96,6 +96,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainPageViewModel.cs" />
     <Compile Include="Utility\InstructionTemplateSelector.cs" />
     <Compile Include="Utility\InverseBooleanConverter.cs" />
     <Compile Include="ListingFileParser.cs" />
