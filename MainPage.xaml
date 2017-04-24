@@ -23,6 +23,7 @@
         </DataTemplate>
         <local:InstructionTemplateSelector x:Key="InstructionTemplateSelector" ProcessorInstructionTemplate="{StaticResource ProcessorInstructionTemplate}" GeneralInstructionTemplate="{StaticResource GeneralInstructionTemplate}" />
         <local:InverseBooleanConverter x:Key="InverseBoolean" />
+        <local:TimeToFrequencyConverter x:Key="TimeToFrequency" />
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="{StaticResource ContentDialogPadding}">
@@ -39,6 +40,14 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Text="Register" Style="{StaticResource TitleTextBlockStyle}" />
+
+        <TextBlock Grid.Row="0" Grid.Column="2" Text="Prozessor" Style="{StaticResource TitleTextBlockStyle}" />
+        <StackPanel Grid.Row="1" Grid.Column="2" Padding="{StaticResource TextControlThemePadding}">
+            <TextBlock Text="Quarzfrequenz (MHz)" />
+            <TextBox ToolTipService.ToolTip="Es können beliebige Werte, auch Kommazahlen, eingetragen werden." x:Name="frequency" InputScope="Digits" TextAlignment="Right" Text="{x:Bind processor.Clock.Interval, Mode=TwoWay, Converter={StaticResource TimeToFrequency}}" />
+            <Slider Minimum="1" Maximum="20" TickPlacement="Outside" TickFrequency="1" Value="{Binding Text,ElementName=frequency,Mode=TwoWay}" IsThumbToolTipEnabled="False"/>
+        </StackPanel>
+
 
         <TextBlock Grid.Row="2" Text="Programmlisting" Style="{StaticResource TitleTextBlockStyle}" />
         <ListView x:Name="SourcecodeListingView" ItemsSource="{Binding Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemTemplateSelector="{StaticResource InstructionTemplateSelector}" />

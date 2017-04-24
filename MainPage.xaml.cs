@@ -100,12 +100,13 @@ namespace PIC_Simulator
 
         private void RunButton_Click(object sender, RoutedEventArgs e)
         {
+            this.processor.Clock.Start();
             this.ViewModel.IsProgramRunning = true;
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            // Stop or Reset?
+            this.processor.Clock.Stop();
             this.ViewModel.IsProgramRunning = false;
         }
     }

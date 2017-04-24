@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Windows.UI.Xaml;
 
 namespace PIC_Simulator
 {
@@ -8,17 +9,26 @@ namespace PIC_Simulator
         internal Collection<ProcessorInstruction> ProgramMemory = new Collection<ProcessorInstruction>();
         private ushort pc;
 
+        /// <summary>
+        /// Der interne Takt für (!)µC-Zyklen
+        /// Beachten: f_PIC = f_Quarz / 4, also 4 Quarz Schwingungen 
+        /// ergeben einen µC-Takt
+        /// </summary>
+        public DispatcherTimer Clock = new DispatcherTimer();
+
         private ISourcecodeViewInterface ViewInterface;
 
 
         public Processor(ISourcecodeViewInterface viewInterface)
         {
             this.ViewInterface = viewInterface;
+            Clock.Tick += Clock_Tick;
+            this.Clock.Interval = new TimeSpan(20); // 20 Ticks ^= 2000 ns ^= 2MHz Quarzfrequenz
         }
 
-        public void Run()
+        private void Clock_Tick(object sender, object e)
         {
-
+            this.Step();
         }
 
         public void Step()
