@@ -18,6 +18,7 @@ namespace PIC_Simulator
 
         private ISourcecodeViewInterface ViewInterface;
 
+        #region Steuerlogik
 
         public Processor(ISourcecodeViewInterface viewInterface)
         {
@@ -48,116 +49,121 @@ namespace PIC_Simulator
         {
             ushort opcode = this.ProgramMemory[pc].Opcode;
 
-            //addwf
-            if ((opcode & 0xFF00) == 0x0700) { this.addwf(); }
+            if ((opcode & 0xFF00) == 0x0700)
+                this.addwf();
 
-            //andwf
-            if ((opcode & 0xFF00) == 0x0500) { this.andwf(); }
+            if ((opcode & 0xFF00) == 0x0500)
+                this.andwf();
 
-            //clrf
-            if ((opcode & 0xFF80) == 0x0180) { this.clrf(); }
+            if ((opcode & 0xFF80) == 0x0180)
+                this.clrf();
 
-            //clrw
-            if ((opcode & 0xFF80) == 0x0100) { this.clrw(); }
+            if ((opcode & 0xFF80) == 0x0100)
+                this.clrw();
 
-            //comf
-            if ((opcode & 0xFF00) == 0x0900) { this.comf(); }
+            if ((opcode & 0xFF00) == 0x0900)
+                this.comf();
 
-            //decf
-            if ((opcode & 0xFF00) == 0x0300) { this.decf(); }
+            if ((opcode & 0xFF00) == 0x0300)
+                this.decf();
 
-            //decfsz
-            if ((opcode & 0xFF00) == 0x0B00) { this.decfsz(); }
+            if ((opcode & 0xFF00) == 0x0B00)
+                this.decfsz();
 
-            //incf
-            if ((opcode & 0xFF00) == 0x0A00) { this.incf(); }
+            if ((opcode & 0xFF00) == 0x0A00)
+                this.incf();
 
-            //incfsz
-            if ((opcode & 0xFF00) == 0x0F00) { this.incfsz(); }
+            if ((opcode & 0xFF00) == 0x0F00)
+                this.incfsz();
 
-            //iorwf
-            if ((opcode & 0xFF00) == 0x0400) { this.iorwf(); }
+            if ((opcode & 0xFF00) == 0x0400)
+                this.iorwf();
 
-            //movf
-            if ((opcode & 0xFF00) == 0x0800) { this.movf(); }
+            if ((opcode & 0xFF00) == 0x0800)
+                this.movf();
 
-            //movwf
-            if ((opcode & 0xFF80) == 0x0080) { this.movwf(); }
+            if ((opcode & 0xFF80) == 0x0080)
+                this.movwf();
 
-            //nop
-            if ((opcode & 0xFF9F) == 0x0000) { this.pc++; }
+            if ((opcode & 0xFF9F) == 0x0000)
+                this.pc++;
 
-            //rlf
-            if ((opcode & 0xFF00) == 0x0E00) { this.rlf(); }
+            if ((opcode & 0xFF00) == 0x0E00)
+                this.rlf();
 
-            //rrf
-            if ((opcode & 0xFF00) == 0x0C00) { this.rrf(); }
+            if ((opcode & 0xFF00) == 0x0C00)
+                this.rrf();
 
-            //subwf
-            if ((opcode & 0xFF00) == 0x0200) { this.subwf(); }
+            if ((opcode & 0xFF00) == 0x0200)
+                this.subwf();
 
-            //swapf
-            if ((opcode & 0xFF00) == 0x0E00) { this.swapf(); }
+            if ((opcode & 0xFF00) == 0x0E00)
+                this.swapf();
 
-            //xorwf
-            if ((opcode & 0xFF00) == 0x0600) { this.xorwf(); }
-
-            //---
-
-            //bcf
-            if ((opcode & 0xFC00) == 0x1000) { this.bcf(); }
-
-            //bsf
-            if ((opcode & 0xFC00) == 0x1400) { this.bsf(); }
-
-            //btfsc
-            if ((opcode & 0xFC00) == 0x1400) { this.btfsc(); }
-
-            //btfss
-            if ((opcode & 0xFC00) == 0x1C00) { this.btfss(); }
+            if ((opcode & 0xFF00) == 0x0600)
+                this.xorwf();
 
             //---
 
-            //addlw
-            if ((opcode & 0xFE00) == 0x3E00) { this.addlw(); }
+            if ((opcode & 0xFC00) == 0x1000)
+                this.bcf();
 
-            //andlw
-            if ((opcode & 0xFF00) == 0x3900) { this.andlw(); }
+            if ((opcode & 0xFC00) == 0x1400)
+                this.bsf();
 
-            //call
-            if ((opcode & 0xF800) == 0x2000) { this.call(); }
+            if ((opcode & 0xFC00) == 0x1400)
+                this.btfsc();
 
-            //clrwdt
-            if ((opcode & 0xFFFF) == 0x0064) { this.clrwdt(); }
+            if ((opcode & 0xFC00) == 0x1C00)
+                this.btfss();
 
-            //goto
-            if ((opcode & 0xF800) == 0x2800) { this.goto_f(); }
+            //---
 
-            //iorlw
-            if ((opcode & 0xFF00) == 0x3800) { this.iorlw(); }
+            if ((opcode & 0xFE00) == 0x3E00)
+                this.addlw();
 
-            //movlw
-            if ((opcode & 0xFC00) == 0x3000) { this.movlw(); }
+            if ((opcode & 0xFF00) == 0x3900)
+                this.andlw();
 
-            //retfie
-            if ((opcode & 0xFFFF) == 0x0009) { this.retfie(); }
+            if ((opcode & 0xF800) == 0x2000)
+                this.call();
 
-            //retlw
-            if ((opcode & 0xFC00) == 0x3400) { this.retlw(); }
+            if ((opcode & 0xFFFF) == 0x0064)
+                this.clrwdt();
 
-            //return
-            if ((opcode & 0xFFFF) == 0x0008) { this.return_f(); }
+            if ((opcode & 0xF800) == 0x2800)
+                this.goto_f();
 
-            //sleep
-            if ((opcode & 0xFFFF) == 0x0063) { this.sleep(); }
+            if ((opcode & 0xFF00) == 0x3800)
+                this.iorlw();
 
-            //sublw
-            if ((opcode & 0xFF00) == 0x3C00) { this.sublw(); }
+            if ((opcode & 0xFC00) == 0x3000)
+                this.movlw();
 
-            //xorlw
-            if ((opcode & 0xFF00) == 0x3A00) { this.xorlw(); }
+            if ((opcode & 0xFFFF) == 0x0009)
+                this.retfie();
+
+            if ((opcode & 0xFC00) == 0x3400)
+                this.retlw();
+
+            if ((opcode & 0xFFFF) == 0x0008)
+                this.return_f();
+
+            if ((opcode & 0xFFFF) == 0x0063)
+                this.sleep();
+
+            if ((opcode & 0xFF00) == 0x3C00)
+                this.sublw();
+
+            if ((opcode & 0xFF00) == 0x3A00)
+                this.xorlw();
         }
 
+        #endregion
+
+        #region Maschinenbefehle
+
+#pragma warning disable IDE1006 // Benennungsstile (Namen müssen mit Großbuchstaben anfangen)
         private void addwf()
         {
             throw new NotImplementedException();
@@ -332,10 +338,11 @@ namespace PIC_Simulator
         {
             throw new NotImplementedException();
         }
+#pragma warning restore IDE1006 // Benennungsstile
+        #endregion
+    }
 
-}
-
-interface ISourcecodeViewInterface
+    interface ISourcecodeViewInterface
     {
         void SetCurrentSourcecodeLine(int line);
     }
