@@ -330,3 +330,32 @@ interface ISourcecodeViewInterface
         void SetCurrentSourcecodeLine(int line);
     }
 }
+
+internal class MemoryController
+{
+    internal ObservableCollection<ushort> Memory = new ObservableCollection<ushort>();
+    
+    internal ushort getFile(ushort address)
+    {
+        // Special purpose registers (Bank1): 0x00 - 0x0B
+        // Special purpose registers (Bank2): 0x80 - 0x8B -> gemapped auf 0x50 - 0x5B
+        // General purpose registers (Bank1): 0x0C - 0x4F
+        // General purpose registers (Bank2): 0x8C - 0xCF -> gemapped auf 0x0C - 0x4F
+
+        // Speicherlayout: SPR1 - GPR - SPR2 
+        if (address >= 0x00 && address <= 0x4F) { return Memory[address]; }
+        if ((address >= 0x50 && address <= 0x7F) || (address >= 0xD0 && address <= 0xFF)) { return 0; }
+        if (address >= 0x80 && address <= 0x8B) { return Memory[address - 0x30]; }
+        if (address >= 0x8C && address <= 0xCF) { return Memory[address - 0x80]; }
+
+        return 0;
+    }
+
+    private void initializeMemory()
+    {
+        for (int i = 0; i <= 0x5B; i++)
+        {
+            this.Memory.Add(0);
+        }
+    }
+}
