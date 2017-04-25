@@ -192,7 +192,8 @@ namespace PIC_Simulator
 
         private void clrw()
         {
-            throw new NotImplementedException();
+            this.wreg = 0;
+            this.memController.SetZeroFlag();
         }
 
         private void comf()
