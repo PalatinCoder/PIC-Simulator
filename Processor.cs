@@ -270,12 +270,16 @@ namespace PIC_Simulator
 
         private void bcf()
         {
-            throw new NotImplementedException();
+            ushort bit = (ushort)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            this.memController.ClearBit(address, bit);
         }
 
         private void bsf()
         {
-            throw new NotImplementedException();
+            ushort bit = (ushort)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            this.memController.SetBit(address, bit);
         }
 
         private void btfsc()
