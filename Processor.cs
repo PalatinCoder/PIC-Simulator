@@ -380,6 +380,12 @@ namespace PIC_Simulator
             this.Memory[index] = value;
         }
 
+        internal void SetZeroFlag()
+        {
+            // Das Zero Bit befindet sich als zweites Bit an Speicheradresse 0x03
+            this.SetBit(0x03, 2);
+        }
+
         internal void SetBit(int address, ushort bit)
         {
             ushort value = this.GetFile(address);
