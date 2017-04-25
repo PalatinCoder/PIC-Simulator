@@ -349,7 +349,12 @@ namespace PIC_Simulator
 
         private void xorlw()
         {
-            throw new NotImplementedException();
+            ushort literal = (ushort) (this.ProgramMemory[pc].Opcode & 0x00FF);
+            this.wreg = (ushort) (literal ^ this.wreg);
+            
+            if (this.wreg == 0)
+                this.memController.SetZeroFlag()
+            
         }
 #pragma warning restore IDE1006 // Benennungsstile
         #endregion
