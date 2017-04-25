@@ -229,7 +229,19 @@ namespace PIC_Simulator
 
         private void movf()
         {
-            throw new NotImplementedException();
+            int address = this.ProgramMemory[pc].Opcode & 0x007F;
+            bool destination = ((this.ProgramMemory[pc].Opcode & 0x0080) == 0x0080);
+            ushort value = this.memController.GetFile(address);
+
+            // if d == 0, value von f in w-register schreiben, 
+            // andernfalls f in f schreiben (redundant) 
+            if (!destination)
+                this.wreg = value;
+
+            if (value == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
         }
 
         private void movwf()
