@@ -364,8 +364,6 @@ namespace PIC_Simulator
         internal MemoryController()
         {
             InitializeMemory();
-
-            Debug.WriteLine(this.Memory.Count);
         }
 
         internal ushort GetFile(int address)
