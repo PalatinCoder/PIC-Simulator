@@ -395,6 +395,11 @@ namespace PIC_Simulator
             this.SetBit(0x03, 2);
         }
 
+        internal void ClearZeroFlag()
+        {
+            this.ClearBit(0x03, 2);
+        }
+
         internal bool GetBit(int address, ushort bit)
         {
             return (this.GetFile(address) & (1 << bit)) == (1 << bit);
