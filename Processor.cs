@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml;
+using System.Diagnostics;
 
 namespace PIC_Simulator
 {
     class Processor
     {
         internal Collection<ProcessorInstruction> ProgramMemory = new Collection<ProcessorInstruction>();
+        private MemoryController memController;
         private ushort pc;
 
         /// <summary>
@@ -25,6 +27,7 @@ namespace PIC_Simulator
             this.ViewInterface = viewInterface;
             Clock.Tick += Clock_Tick;
             this.Clock.Interval = new TimeSpan(20); // 20 Ticks ^= 2000 ns ^= 2MHz Quarzfrequenz
+            this.memController = new MemoryController();
         }
 
         private void Clock_Tick(object sender, object e)
@@ -34,7 +37,6 @@ namespace PIC_Simulator
 
         public void Step()
         {
-            this.Decode();
             this.pc++;
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[pc].LineNumber - 1);
         }
@@ -353,11 +355,31 @@ namespace PIC_Simulator
         void SetCurrentSourcecodeLine(int line);
     }
 
+
     internal class MemoryController
     {
         internal ObservableCollection<ushort> Memory = new ObservableCollection<ushort>();
 
-        internal ushort GetFile(ushort address)
+        public MemoryController()
+        {
+            InitializeMemory();
+
+            Debug.WriteLine(this.Memory.Count);
+        }
+
+        internal ushort GetFile(int address)
+        {
+            int index = DecodeAddress(address);
+            return this.Memory[index];
+        }
+
+        public void SetFile(int address, ushort value)
+        {
+            int index = DecodeAddress(address);
+            this.Memory[index] = value;
+        }
+
+        private int DecodeAddress(int address)
         {
             // Special purpose registers (Bank1): 0x00 - 0x0B
             // Special purpose registers (Bank2): 0x80 - 0x8B -> gemapped auf 0x50 - 0x5B
@@ -365,13 +387,14 @@ namespace PIC_Simulator
             // General purpose registers (Bank2): 0x8C - 0xCF -> gemapped auf 0x0C - 0x4F
 
             // Speicherlayout: SPR1 - GPR - SPR2 
-            if (address >= 0x00 && address <= 0x4F) { return Memory[address]; }
+            if (address >= 0x00 && address <= 0x4F) { return address; }
             if ((address >= 0x50 && address <= 0x7F) || (address >= 0xD0 && address <= 0xFF)) { return 0; }
-            if (address >= 0x80 && address <= 0x8B) { return Memory[address - 0x30]; }
-            if (address >= 0x8C && address <= 0xCF) { return Memory[address - 0x80]; }
+            if (address >= 0x80 && address <= 0x8B) { return address - 0x30; }
+            if (address >= 0x8C && address <= 0xCF) { return address - 0x80; }
 
-            return 0;
+            throw new Exception();
         }
+
 
         private void InitializeMemory()
         {
