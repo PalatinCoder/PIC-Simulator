@@ -234,7 +234,8 @@ namespace PIC_Simulator
 
         private void movwf()
         {
-            throw new NotImplementedException();
+            int address = (this.ProgramMemory[pc].Opcode & 0x007F);
+            this.memController.SetFile(address, this.wreg);
         }
 
         private void nop()
