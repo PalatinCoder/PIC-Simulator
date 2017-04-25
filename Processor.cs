@@ -361,7 +361,7 @@ namespace PIC_Simulator
     {
         internal ObservableCollection<ushort> Memory = new ObservableCollection<ushort>();
 
-        public MemoryController()
+        internal MemoryController()
         {
             InitializeMemory();
 
@@ -374,7 +374,7 @@ namespace PIC_Simulator
             return this.Memory[index];
         }
 
-        public void SetFile(int address, ushort value)
+        internal void SetFile(int address, ushort value)
         {
             int index = DecodeAddress(address);
             this.Memory[index] = value;
