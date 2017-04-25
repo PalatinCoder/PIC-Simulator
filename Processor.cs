@@ -37,6 +37,7 @@ namespace PIC_Simulator
 
         public void Step()
         {
+            this.Decode();
             this.pc++;
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[pc].LineNumber - 1);
         }
