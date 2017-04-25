@@ -407,6 +407,13 @@ namespace PIC_Simulator
             this.SetFile(address, value);
         }
 
+        internal void ClearBit(int address, ushort bit)
+        {
+            ushort value = this.GetFile(address);
+            value &= (ushort) ~(1 << bit);
+            this.SetFile(address, value);
+        }
+
         private int DecodeAddress(int address)
         {
             // Special purpose registers (Bank1): 0x00 - 0x0B
