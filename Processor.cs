@@ -187,7 +187,8 @@ namespace PIC_Simulator
 
         private void clrf()
         {
-            throw new NotImplementedException();
+            int address = (this.ProgramMemory[pc].Opcode & 0x007F);
+            this.memController.SetFile(address, 0);
         }
 
         private void clrw()
