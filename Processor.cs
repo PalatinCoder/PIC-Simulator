@@ -122,7 +122,7 @@ namespace PIC_Simulator
             if ((opcode & 0xFC00) == 0x1400)
                 this.bsf();
 
-            if ((opcode & 0xFC00) == 0x1400)
+            if ((opcode & 0xFC00) == 0x1800)
                 this.btfsc();
 
             if ((opcode & 0xFC00) == 0x1C00)
