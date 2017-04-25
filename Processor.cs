@@ -355,7 +355,7 @@ namespace PIC_Simulator
             this.wreg = (ushort) (literal ^ this.wreg);
             
             if (this.wreg == 0)
-                this.memController.SetZeroFlag()
+                this.memController.SetZeroFlag();
             
         }
 #pragma warning restore IDE1006 // Benennungsstile
