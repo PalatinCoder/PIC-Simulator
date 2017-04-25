@@ -318,7 +318,8 @@ namespace PIC_Simulator
 
         private void movlw()
         {
-            throw new NotImplementedException();
+            ushort literal = (ushort) (this.ProgramMemory[pc].Opcode & 0x00FF);
+            this.wreg = literal;
         }
 
         private void retfie()
