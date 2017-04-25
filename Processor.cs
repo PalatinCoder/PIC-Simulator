@@ -10,6 +10,7 @@ namespace PIC_Simulator
         internal Collection<ProcessorInstruction> ProgramMemory = new Collection<ProcessorInstruction>();
         private MemoryController memController;
         private ushort pc;
+        private ushort wreg;
 
         /// <summary>
         /// Der interne Takt für (!)µC-Zyklen
@@ -45,6 +46,7 @@ namespace PIC_Simulator
         internal void Reset()
         {
             this.pc = 0;
+            this.wreg = 0;
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
         }
 
