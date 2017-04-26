@@ -11,6 +11,7 @@ namespace PIC_Simulator
         private MemoryController memController;
         private ushort pc;
         private byte wreg;
+        private bool twoCycles;
 
         /// <summary>
         /// Der interne Takt für (!)µC-Zyklen
@@ -29,11 +30,15 @@ namespace PIC_Simulator
             Clock.Tick += Clock_Tick;
             this.Clock.Interval = new TimeSpan(20); // 20 Ticks ^= 2000 ns ^= 2MHz Quarzfrequenz
             this.memController = new MemoryController();
+            this.twoCycles = false;
         }
 
         private void Clock_Tick(object sender, object e)
         {
-            this.Step();
+            if (this.twoCycles)
+                this.twoCycles = false;
+            else
+                this.Step();
         }
 
         public void Step()
@@ -271,7 +276,7 @@ namespace PIC_Simulator
 
             if (result == 0)
             {
-                //TODO 2 cycles
+                this.twoCycles = true;
                 this.pc++;  //Programmcounter hochzaehlen, um naechsten Befehl zu ueberspringen
             }
         }
