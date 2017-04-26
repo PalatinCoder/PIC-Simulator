@@ -243,7 +243,21 @@ namespace PIC_Simulator
 
         private void decfsz()
         {
-            throw new NotImplementedException();
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte value = this.memController.GetFile(address);
+            value--;
+
+            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+                this.memController.SetFile(address, value);
+            else
+                this.wreg = value;
+
+            if (value == 0)
+            {
+                this.twoCycles = true;
+                this.pc++;
+            }
+
         }
 
         private void incf()
