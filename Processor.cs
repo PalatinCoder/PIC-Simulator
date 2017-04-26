@@ -214,7 +214,19 @@ namespace PIC_Simulator
 
         private void incf()
         {
-            throw new NotImplementedException();
+            int address = this.ProgramMemory[pc].Opcode & 0x007F;
+            ushort value = this.memController.GetFile(address);
+            ushort result = value++;
+
+            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+                this.memController.SetFile(address, result);
+            else
+                this.wreg = result;
+
+            if (result == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
         }
 
         private void incfsz()
