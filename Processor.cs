@@ -390,7 +390,6 @@ namespace PIC_Simulator
                 this.memController.SetFile(address, value);
             else
                 this.wreg = value;
-
         }
 
         private void xorwf()
