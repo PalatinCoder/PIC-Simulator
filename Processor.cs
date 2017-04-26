@@ -486,7 +486,13 @@ namespace PIC_Simulator
 
         private void iorlw()
         {
-            throw new NotImplementedException();
+            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            this.wreg = (byte)(literal | this.wreg);
+
+            if (this.wreg == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
         }
 
         private void movlw()
