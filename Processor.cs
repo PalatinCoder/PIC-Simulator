@@ -502,6 +502,31 @@ namespace PIC_Simulator
             this.SetFile(address, value);
         }
 
+        internal ushort GetPC()
+        {
+            ushort lowerBits = (ushort)GetFile(0x02);
+            ushort upperBits = (ushort)GetFile(0x0A);
+            ushort pc = (ushort)((upperBits << 8) + lowerBits);
+
+            return pc;
+        }
+
+        internal void SetPC(ushort pc)
+        {
+            byte lowerBits = (byte)(pc & 0x00FF);
+            byte upperBits = (byte)((pc & 0x1F00) >> 8);
+
+            SetFile(0x02, lowerBits);
+            SetFile(0x0A, upperBits);
+        }
+
+        internal void IncPC()
+        {
+            ushort pc = GetPC();
+            pc++;
+            SetPC(pc);
+        }
+
         private int DecodeAddress(ushort address)
         {
             // Special purpose registers (Bank1): 0x00 - 0x0B
