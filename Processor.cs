@@ -379,7 +379,18 @@ namespace PIC_Simulator
 
         private void swapf()
         {
-            throw new NotImplementedException();
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte value = this.memController.GetFile(address);
+            byte lowerNibbles = (byte)(value & 0x0F);
+            byte upperNibbles = (byte)((value & 0xF0) >> 4);
+
+            value = (byte)((lowerNibbles << 4) + upperNibbles);
+
+            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+                this.memController.SetFile(address, value);
+            else
+                this.wreg = value;
+
         }
 
         private void xorwf()
