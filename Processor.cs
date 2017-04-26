@@ -211,7 +211,14 @@ namespace PIC_Simulator
 
         private void comf()
         {
-            throw new NotImplementedException();
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte value = this.memController.GetFile(address);
+            byte result = (~value);
+
+            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+                this.memController.SetFile(address, result);
+            else
+                this.wreg = result;
         }
 
         private void decf()
