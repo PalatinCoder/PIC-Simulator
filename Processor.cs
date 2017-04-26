@@ -213,7 +213,7 @@ namespace PIC_Simulator
         {
             ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
             byte value = this.memController.GetFile(address);
-            byte result = (~value);
+            byte result = (byte)(~value);
 
             if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
                 this.memController.SetFile(address, result);
