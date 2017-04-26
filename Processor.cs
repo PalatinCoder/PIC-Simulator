@@ -395,7 +395,15 @@ namespace PIC_Simulator
 
         private void xorwf()
         {
-            throw new NotImplementedException();
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte value = this.memController.GetFile(address);
+
+            byte result = (byte)(value ^ this.wreg);
+
+            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+                this.memController.SetFile(address, result);
+            else
+                this.wreg = result;
         }
 
         private void bcf()
