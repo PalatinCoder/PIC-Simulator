@@ -257,7 +257,6 @@ namespace PIC_Simulator
                 this.twoCycles = true;
                 this.pc++;
             }
-
         }
 
         private void incf()
@@ -299,7 +298,7 @@ namespace PIC_Simulator
         {
             ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
             byte value = this.memController.GetFile(address);
-            byte result = (byte) (value | this.wreg);
+            byte result = (byte)(value | this.wreg);
 
             if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
                 this.memController.SetFile(address, result);
