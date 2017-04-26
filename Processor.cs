@@ -10,7 +10,7 @@ namespace PIC_Simulator
         internal Collection<ProcessorInstruction> ProgramMemory = new Collection<ProcessorInstruction>();
         private MemoryController memController;
         private ushort pc;
-        private ushort wreg;
+        private byte wreg;
 
         /// <summary>
         /// Der interne Takt für (!)µC-Zyklen
@@ -187,7 +187,7 @@ namespace PIC_Simulator
 
         private void clrf()
         {
-            int address = (this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
             this.memController.SetFile(address, 0);
         }
 
@@ -214,9 +214,9 @@ namespace PIC_Simulator
 
         private void incf()
         {
-            int address = this.ProgramMemory[pc].Opcode & 0x007F;
-            ushort value = this.memController.GetFile(address);
-            ushort result = value++;
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte value = this.memController.GetFile(address);
+            byte result = value++;
 
             if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
                 this.memController.SetFile(address, result);
@@ -241,9 +241,9 @@ namespace PIC_Simulator
 
         private void movf()
         {
-            int address = this.ProgramMemory[pc].Opcode & 0x007F;
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
             bool destination = ((this.ProgramMemory[pc].Opcode & 0x0080) == 0x0080);
-            ushort value = this.memController.GetFile(address);
+            byte value = this.memController.GetFile(address);
 
             // if d == 0, value von f in w-register schreiben, 
             // andernfalls f in f schreiben (redundant) 
@@ -258,7 +258,7 @@ namespace PIC_Simulator
 
         private void movwf()
         {
-            int address = (this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
             this.memController.SetFile(address, this.wreg);
         }
 
@@ -294,14 +294,14 @@ namespace PIC_Simulator
 
         private void bcf()
         {
-            ushort bit = (ushort)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
+            byte bit = (byte)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
             ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
             this.memController.ClearBit(address, bit);
         }
 
         private void bsf()
         {
-            ushort bit = (ushort)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
+            byte bit = (byte)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
             ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
             this.memController.SetBit(address, bit);
         }
@@ -328,6 +328,7 @@ namespace PIC_Simulator
 
         private void call()
         {
+            //TODO two cycles
             throw new NotImplementedException();
         }
 
@@ -338,6 +339,7 @@ namespace PIC_Simulator
 
         private void goto_f()
         {
+            //TODO two cycles
             throw new NotImplementedException();
         }
 
@@ -348,7 +350,7 @@ namespace PIC_Simulator
 
         private void movlw()
         {
-            ushort literal = (ushort) (this.ProgramMemory[pc].Opcode & 0x00FF);
+            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
             this.wreg = literal;
         }
 
@@ -379,12 +381,14 @@ namespace PIC_Simulator
 
         private void xorlw()
         {
-            ushort literal = (ushort) (this.ProgramMemory[pc].Opcode & 0x00FF);
-            this.wreg = (ushort) (literal ^ this.wreg);
-            
+            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            this.wreg = (byte)(literal ^ this.wreg);
+
             if (this.wreg == 0)
                 this.memController.SetZeroFlag();
-            
+            else
+                this.memController.ClearZeroFlag();
+
         }
 #pragma warning restore IDE1006 // Benennungsstile
         #endregion
@@ -398,20 +402,21 @@ namespace PIC_Simulator
 
     internal class MemoryController
     {
-        internal ObservableCollection<ushort> Memory = new ObservableCollection<ushort>();
+        internal ObservableCollection<byte> Memory = new ObservableCollection<byte>();
+        //TODO Low Order 8 Bits des program counters sind an Adresse 0x02 (PCL)
 
         internal MemoryController()
         {
             InitializeMemory();
         }
 
-        internal ushort GetFile(int address)
+        internal byte GetFile(ushort address)
         {
             int index = DecodeAddress(address);
             return this.Memory[index];
         }
 
-        internal void SetFile(int address, ushort value)
+        internal void SetFile(ushort address, byte value)
         {
             int index = DecodeAddress(address);
             this.Memory[index] = value;
@@ -428,26 +433,26 @@ namespace PIC_Simulator
             this.ClearBit(0x03, 2);
         }
 
-        internal bool GetBit(int address, ushort bit)
+        internal bool GetBit(ushort address, byte bit)
         {
             return (this.GetFile(address) & (1 << bit)) == (1 << bit);
         }
 
-        internal void SetBit(int address, ushort bit)
+        internal void SetBit(ushort address, byte bit)
         {
-            ushort value = this.GetFile(address);
-            value |= (ushort) (1 << bit);
+            byte value = this.GetFile(address);
+            value |= (byte)(1 << bit);
             this.SetFile(address, value);
         }
 
-        internal void ClearBit(int address, ushort bit)
+        internal void ClearBit(ushort address, byte bit)
         {
-            ushort value = this.GetFile(address);
-            value &= (ushort) ~(1 << bit);
+            byte value = this.GetFile(address);
+            value &= (byte)~(1 << bit);
             this.SetFile(address, value);
         }
 
-        private int DecodeAddress(int address)
+        private int DecodeAddress(ushort address)
         {
             // Special purpose registers (Bank1): 0x00 - 0x0B
             // Special purpose registers (Bank2): 0x80 - 0x8B -> gemapped auf 0x50 - 0x5B
