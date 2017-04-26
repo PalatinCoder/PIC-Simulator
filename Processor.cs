@@ -422,12 +422,28 @@ namespace PIC_Simulator
 
         private void btfsc()
         {
-            throw new NotImplementedException();
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte bit = (byte)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
+            byte result = this.memController.GetBit(address, bit);
+
+            if (result == 0)
+            {
+                this.twoCycles = true;
+                this.pc++;
+            }
         }
 
         private void btfss()
         {
-            throw new NotImplementedException();
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte bit = (byte)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
+            byte result = this.memController.GetBit(address, bit);
+
+            if (result > 0)
+            {
+                this.twoCycles = true;
+                this.pc++;
+            }
         }
 
         private void addlw()
