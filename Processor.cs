@@ -335,7 +335,13 @@ namespace PIC_Simulator
 
         private void andlw()
         {
-            throw new NotImplementedException();
+            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            this.wreg &= literal;
+
+            if (this.wreg == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
         }
 
         private void call()
