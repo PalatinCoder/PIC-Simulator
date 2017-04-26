@@ -182,7 +182,19 @@ namespace PIC_Simulator
 
         private void andwf()
         {
-            throw new NotImplementedException();
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte value = this.memController.GetFile(address);
+            byte result = (byte)(this.wreg & value);
+
+            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+                this.memController.SetFile(address, result);
+            else
+                this.wreg = result;
+
+            if (result == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
         }
 
         private void clrf()
