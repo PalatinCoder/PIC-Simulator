@@ -470,7 +470,12 @@ namespace PIC_Simulator
 
         private void clrwdt()
         {
-            throw new NotImplementedException();
+            // TO und PD Bits im Statusregister auf 1 Setzen
+            this.memController.SetBit(0x03, 4);
+            this.memController.SetBit(0x03, 3);
+
+            //TODO WDT auf 0x00 setzen
+            //TODO WDT prescaler auf 0 setzen
         }
 
         private void goto_f()
