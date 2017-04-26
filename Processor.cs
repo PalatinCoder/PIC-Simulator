@@ -345,11 +345,12 @@ namespace PIC_Simulator
             ushort value = (ushort)this.memController.GetFile(address);
 
             value = (ushort)(value << 1);
-            byte carry = (byte)((value & 0x0100) >> 8);
-            byte newValue = (byte)value;
+            byte carry = this.memController.GetBit(0x03, 0);
+            byte newCarry = (byte)((value & 0x0100) >> 8);
+            byte newValue = (byte)(value + carry);
 
             this.memController.SetFile(address, newValue);
-            if (carry == 1)
+            if (newCarry == 1)
                 this.memController.SetBit(0x03, 0);
             else
                 this.memController.ClearBit(0x03, 0);
@@ -360,11 +361,12 @@ namespace PIC_Simulator
             ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
             byte value = this.memController.GetFile(address);
 
-            byte carry = (byte)((value & 0x02) >> 1);
-            value = (byte)(value >> 1);
+            byte carry = this.memController.GetBit(0x03, 0);
+            byte newCarry = (byte)(value & 0x01);
+            value = (byte)((value >> 1) + (carry << 7));
 
             this.memController.SetFile(address, value);
-            if (carry == 1)
+            if (newCarry == 1)
                 this.memController.SetBit(0x03, 0);
             else
                 this.memController.ClearBit(0x03, 0);
