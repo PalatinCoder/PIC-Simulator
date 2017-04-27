@@ -521,7 +521,8 @@ namespace PIC_Simulator
 
         private void return_f()
         {
-            throw new NotImplementedException();
+            // TODO two cycles
+            this.memController.SetPC(this.Stack.Pop());
         }
 
         private void sleep()
