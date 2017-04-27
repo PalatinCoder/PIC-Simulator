@@ -52,8 +52,8 @@ namespace PIC_Simulator
         public void Step()
         {
             this.Decode();
-            this.pc++;
-            ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[pc].LineNumber - 1);
+            this.memController.IncPC();
+            ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.GetPC()].LineNumber - 1);
         }
 
         internal void Reset()
@@ -71,7 +71,7 @@ namespace PIC_Simulator
         /// </summary>
         private void Decode()
         {
-            ushort opcode = this.ProgramMemory[pc].Opcode;
+            ushort opcode = this.GetOpcode();
 
             if ((opcode & 0xFF00) == 0x0700)
                 this.addwf();
@@ -110,7 +110,7 @@ namespace PIC_Simulator
                 this.movwf();
 
             if ((opcode & 0xFF9F) == 0x0000)
-                this.pc++;
+                this.memController.IncPC();
 
             if ((opcode & 0xFF00) == 0x0E00)
                 this.rlf();
@@ -288,7 +288,7 @@ namespace PIC_Simulator
             if (value == 0)
             {
                 this.twoCycles = true;
-                this.pc++;
+                this.memController.IncPC();
             }
         }
 
@@ -315,7 +315,7 @@ namespace PIC_Simulator
             byte value = this.memController.GetFile(address);
             byte result = value++;
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, result);
             else
                 this.wreg = result;
@@ -323,7 +323,7 @@ namespace PIC_Simulator
             if (result == 0)
             {
                 this.twoCycles = true;
-                this.pc++;  //Programmcounter hochzaehlen, um naechsten Befehl zu ueberspringen
+                this.memController.IncPC();  //Programmcounter hochzaehlen, um naechsten Befehl zu ueberspringen
             }
         }
 
@@ -479,7 +479,7 @@ namespace PIC_Simulator
             if (result == 0)
             {
                 this.twoCycles = true;
-                this.pc++;
+                this.memController.IncPC();
             }
         }
 
@@ -492,7 +492,7 @@ namespace PIC_Simulator
             if (result > 0)
             {
                 this.twoCycles = true;
-                this.pc++;
+                this.memController.IncPC();
             }
         }
 
@@ -634,7 +634,7 @@ namespace PIC_Simulator
 
         private void xorlw()
         {
-            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            byte literal = (byte)(this.GetOpcode() & 0x00FF);
             this.wreg = (byte)(literal ^ this.wreg);
 
             if (this.wreg == 0)
