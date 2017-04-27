@@ -460,8 +460,13 @@ namespace PIC_Simulator
 
         private void call()
         {
-            //TODO two cycles
-            throw new NotImplementedException();
+            // TODO two cycles
+            // Dokumentation sagt PCLATH<4:3> nach PC<12:11>
+            // Dadurch wird Bit 2 komplett übergangen.
+            ushort pclath = (ushort)((this.memController.GetPC() & 0x1800) >> 1);
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x07FF);
+            this.Stack.Push((ushort)(this.pc + 1));
+            this.memController.SetPC((ushort)(address + pclath));
         }
 
         private void clrwdt()
