@@ -40,7 +40,7 @@ namespace PIC_Simulator
         {
             // Pattern für Zeilen die Opcodes enthalten: 
             // Adresse | Opcode | Zeilennummer | Rest
-            Regex ProcessorInstructionPattern = new Regex("^([0-9]{4}) ([0-9A-F]{4}) * ([0-9]{5}) (.*)$");
+            Regex ProcessorInstructionPattern = new Regex("^([0-9A-F]{4}) ([0-9A-F]{4}) * ([0-9]{5}) (.*)$");
             Match m = ProcessorInstructionPattern.Match(line);
             if (m.Success)
             // Opcode gefunden
