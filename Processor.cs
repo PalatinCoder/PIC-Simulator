@@ -482,7 +482,9 @@ namespace PIC_Simulator
         private void goto_f()
         {
             //TODO two cycles
-            throw new NotImplementedException();
+            ushort pclath = (ushort)((this.memController.GetPC() & 0x1800) >> 1);
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x07FF);
+            this.memController.SetPC((ushort)(address + pclath));
         }
 
         private void iorlw()
