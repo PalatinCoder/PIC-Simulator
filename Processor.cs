@@ -514,7 +514,9 @@ namespace PIC_Simulator
 
         private void retlw()
         {
-            throw new NotImplementedException();
+            // TODO two cycles
+            this.wreg = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            this.memController.SetPC(this.Stack.Pop());
         }
 
         private void return_f()
