@@ -527,7 +527,11 @@ namespace PIC_Simulator
 
         private void sleep()
         {
-            throw new NotImplementedException();
+            // TODO 0x00 -> WDT
+            // TODO 0 -> WDT prescaler
+            // TODO PIC in Sleep Modus versetzen!
+            this.memController.SetBit(0x03, 4);
+            this.memController.ClearBit(0x03, 3);
         }
 
         private void sublw()
