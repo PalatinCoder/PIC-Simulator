@@ -35,6 +35,12 @@ namespace PIC_Simulator
             this.twoCycles = false;
         }
 
+        private ushort GetOpcode()
+        {
+            ushort pc = this.memController.GetPC();
+            return this.ProgramMemory[pc].Opcode;
+        }
+
         private void Clock_Tick(object sender, object e)
         {
             if (this.twoCycles)
