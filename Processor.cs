@@ -506,7 +506,10 @@ namespace PIC_Simulator
 
         private void retfie()
         {
-            throw new NotImplementedException();
+            // TODO two cycles
+            // Set GIE bit:
+            this.memController.SetBit(0x0B, 7);
+            this.memController.SetPC(this.Stack.Pop());
         }
 
         private void retlw()
