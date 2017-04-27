@@ -444,7 +444,28 @@ namespace PIC_Simulator
 
         private void addlw()
         {
-            throw new NotImplementedException();
+            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            ushort result = (ushort)(literal + this.wreg);
+
+            //Set DC Bit
+            if (this.wreg <= 0x0F && result >= 0x10)
+                this.memController.SetBit(0x03, 1);
+            else
+                this.memController.ClearBit(0x03, 1);
+
+            //Set C Bit
+            if ((result & 0xFF00) > 0)
+                this.memController.SetBit(0x03, 0);
+            else
+                this.memController.ClearBit(0x03, 0);
+
+            //Set Z Bit
+            if (result == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
+
+            this.wreg = (byte)result;
         }
 
         private void andlw()
