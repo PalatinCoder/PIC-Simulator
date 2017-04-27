@@ -396,7 +396,30 @@ namespace PIC_Simulator
 
         private void subwf()
         {
-            throw new NotImplementedException();
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte value = (byte)(this.memController.GetFile(address));
+
+            byte result = (byte)(value - this.wreg);
+
+            if (this.wreg > value)
+                this.memController.ClearBit(0x03, 0);
+            else
+                this.memController.SetBit(0x03, 0);
+
+            if ((this.wreg & 0x0F) > (value & 0x0F))
+                this.memController.ClearBit(0x03, 1);
+            else
+                this.memController.SetBit(0x03, 1);
+
+            if (result == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
+
+            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+                this.memController.SetFile(address, value);
+            else
+                this.wreg = value;
         }
 
         private void swapf()
