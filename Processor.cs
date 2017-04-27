@@ -10,7 +10,6 @@ namespace PIC_Simulator
     {
         internal Collection<ProcessorInstruction> ProgramMemory = new Collection<ProcessorInstruction>();
         private MemoryController memController;
-        private ushort pc;
         private byte wreg;
         private bool twoCycles;
         private Stack<ushort> Stack = new Stack<ushort>();
@@ -58,7 +57,7 @@ namespace PIC_Simulator
 
         internal void Reset()
         {
-            this.pc = 0;
+            this.memController.SetPC(0);
             this.wreg = 0;
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
         }
@@ -280,7 +279,7 @@ namespace PIC_Simulator
             byte value = this.memController.GetFile(address);
             value--;
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, value);
             else
                 this.wreg = value;
@@ -540,7 +539,7 @@ namespace PIC_Simulator
             // Dadurch wird Bit 2 komplett übergangen.
             ushort pclath = (ushort)((this.memController.GetPC() & 0x1800) >> 1);
             ushort address = (ushort)(this.GetOpcode() & 0x07FF);
-            this.Stack.Push((ushort)(this.pc + 1));
+            this.Stack.Push((ushort)(this.memController.GetPC() + 1));
             this.memController.SetPC((ushort)(address + pclath));
         }
 
