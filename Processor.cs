@@ -296,7 +296,7 @@ namespace PIC_Simulator
         {
             ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
-            byte result = value++;
+            byte result = (byte)(value + 1);
 
             if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, result);
@@ -313,7 +313,7 @@ namespace PIC_Simulator
         {
             ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
-            byte result = value++;
+            byte result = (byte)(value + 1);
 
             if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, result);
