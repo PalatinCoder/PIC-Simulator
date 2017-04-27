@@ -190,7 +190,7 @@ namespace PIC_Simulator
 #pragma warning disable IDE1006 // Benennungsstile (Namen müssen mit Großbuchstaben anfangen)
         private void addwf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             ushort value = (ushort)this.memController.GetFile(address);
             ushort result = (ushort)(this.wreg + value);
 
@@ -212,7 +212,7 @@ namespace PIC_Simulator
             else
                 this.memController.ClearZeroFlag();
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, (byte)result);
             else
                 this.wreg = (byte)result;
@@ -220,11 +220,11 @@ namespace PIC_Simulator
 
         private void andwf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
             byte result = (byte)(this.wreg & value);
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, result);
             else
                 this.wreg = result;
@@ -237,7 +237,7 @@ namespace PIC_Simulator
 
         private void clrf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             this.memController.SetFile(address, 0);
         }
 
@@ -249,11 +249,11 @@ namespace PIC_Simulator
 
         private void comf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
             byte result = (byte)(~value);
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, result);
             else
                 this.wreg = result;
@@ -261,11 +261,11 @@ namespace PIC_Simulator
 
         private void decf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
             value--;
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, value);
             else
                 this.wreg = value;
@@ -276,7 +276,7 @@ namespace PIC_Simulator
 
         private void decfsz()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
             value--;
 
@@ -294,11 +294,11 @@ namespace PIC_Simulator
 
         private void incf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
             byte result = value++;
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, result);
             else
                 this.wreg = result;
@@ -311,7 +311,7 @@ namespace PIC_Simulator
 
         private void incfsz()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
             byte result = value++;
 
@@ -329,11 +329,11 @@ namespace PIC_Simulator
 
         private void iorwf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
             byte result = (byte)(value | this.wreg);
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, result);
             else
                 this.wreg = result;
@@ -346,8 +346,8 @@ namespace PIC_Simulator
 
         private void movf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
-            bool destination = ((this.ProgramMemory[pc].Opcode & 0x0080) == 0x0080);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
+            bool destination = ((this.GetOpcode() & 0x0080) == 0x0080);
             byte value = this.memController.GetFile(address);
 
             // if d == 0, value von f in w-register schreiben, 
@@ -363,13 +363,13 @@ namespace PIC_Simulator
 
         private void movwf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             this.memController.SetFile(address, this.wreg);
         }
 
         private void rlf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             ushort value = (ushort)this.memController.GetFile(address);
 
             value = (ushort)(value << 1);
@@ -386,7 +386,7 @@ namespace PIC_Simulator
 
         private void rrf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
 
             byte carry = this.memController.GetBit(0x03, 0);
@@ -402,7 +402,7 @@ namespace PIC_Simulator
 
         private void subwf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = (byte)(this.memController.GetFile(address));
 
             byte result = (byte)(value - this.wreg);
@@ -422,7 +422,7 @@ namespace PIC_Simulator
             else
                 this.memController.ClearZeroFlag();
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, value);
             else
                 this.wreg = value;
@@ -430,14 +430,14 @@ namespace PIC_Simulator
 
         private void swapf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
             byte lowerNibbles = (byte)(value & 0x0F);
             byte upperNibbles = (byte)((value & 0xF0) >> 4);
 
             value = (byte)((lowerNibbles << 4) + upperNibbles);
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, value);
             else
                 this.wreg = value;
@@ -445,12 +445,12 @@ namespace PIC_Simulator
 
         private void xorwf()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             byte value = this.memController.GetFile(address);
 
             byte result = (byte)(value ^ this.wreg);
 
-            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+            if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, result);
             else
                 this.wreg = result;
@@ -458,22 +458,22 @@ namespace PIC_Simulator
 
         private void bcf()
         {
-            byte bit = (byte)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte bit = (byte)((this.GetOpcode() & 0x0380) >> 7);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             this.memController.ClearBit(address, bit);
         }
 
         private void bsf()
         {
-            byte bit = (byte)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            byte bit = (byte)((this.GetOpcode() & 0x0380) >> 7);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
             this.memController.SetBit(address, bit);
         }
 
         private void btfsc()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
-            byte bit = (byte)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
+            byte bit = (byte)((this.GetOpcode() & 0x0380) >> 7);
             byte result = this.memController.GetBit(address, bit);
 
             if (result == 0)
@@ -485,8 +485,8 @@ namespace PIC_Simulator
 
         private void btfss()
         {
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
-            byte bit = (byte)((this.ProgramMemory[pc].Opcode & 0x0380) >> 7);
+            ushort address = (ushort)(this.GetOpcode() & 0x007F);
+            byte bit = (byte)((this.GetOpcode() & 0x0380) >> 7);
             byte result = this.memController.GetBit(address, bit);
 
             if (result > 0)
@@ -498,7 +498,7 @@ namespace PIC_Simulator
 
         private void addlw()
         {
-            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            byte literal = (byte)(this.GetOpcode() & 0x00FF);
             ushort result = (ushort)(literal + this.wreg);
 
             //Set DC Bit
@@ -524,7 +524,7 @@ namespace PIC_Simulator
 
         private void andlw()
         {
-            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            byte literal = (byte)(this.GetOpcode() & 0x00FF);
             this.wreg &= literal;
 
             if (this.wreg == 0)
@@ -539,7 +539,7 @@ namespace PIC_Simulator
             // Dokumentation sagt PCLATH<4:3> nach PC<12:11>
             // Dadurch wird Bit 2 komplett übergangen.
             ushort pclath = (ushort)((this.memController.GetPC() & 0x1800) >> 1);
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x07FF);
+            ushort address = (ushort)(this.GetOpcode() & 0x07FF);
             this.Stack.Push((ushort)(this.pc + 1));
             this.memController.SetPC((ushort)(address + pclath));
         }
@@ -558,13 +558,13 @@ namespace PIC_Simulator
         {
             //TODO two cycles
             ushort pclath = (ushort)((this.memController.GetPC() & 0x1800) >> 1);
-            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x07FF);
+            ushort address = (ushort)(this.GetOpcode() & 0x07FF);
             this.memController.SetPC((ushort)(address + pclath));
         }
 
         private void iorlw()
         {
-            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            byte literal = (byte)(this.GetOpcode() & 0x00FF);
             this.wreg = (byte)(literal | this.wreg);
 
             if (this.wreg == 0)
@@ -575,7 +575,7 @@ namespace PIC_Simulator
 
         private void movlw()
         {
-            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            byte literal = (byte)(this.GetOpcode() & 0x00FF);
             this.wreg = literal;
         }
 
@@ -590,7 +590,7 @@ namespace PIC_Simulator
         private void retlw()
         {
             // TODO two cycles
-            this.wreg = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            this.wreg = (byte)(this.GetOpcode() & 0x00FF);
             this.memController.SetPC(this.Stack.Pop());
         }
 
@@ -611,7 +611,7 @@ namespace PIC_Simulator
 
         private void sublw()
         {
-            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            byte literal = (byte)(this.GetOpcode() & 0x00FF);
             byte result = (byte)(literal - this.wreg);
 
             if (this.wreg > literal)
