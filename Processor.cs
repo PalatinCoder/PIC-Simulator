@@ -424,9 +424,9 @@ namespace PIC_Simulator
                 this.memController.ClearZeroFlag();
 
             if ((this.GetOpcode() & 0x0080) > 0)
-                this.memController.SetFile(address, value);
+                this.memController.SetFile(address, result);
             else
-                this.wreg = value;
+                this.wreg = result;
         }
 
         private void swapf()
