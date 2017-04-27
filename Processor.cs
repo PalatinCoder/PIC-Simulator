@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using Windows.UI.Xaml;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace PIC_Simulator
 {
@@ -12,6 +13,7 @@ namespace PIC_Simulator
         private ushort pc;
         private byte wreg;
         private bool twoCycles;
+        private Stack<ushort> Stack = new Stack<ushort>();
 
         /// <summary>
         /// Der interne Takt für (!)µC-Zyklen
