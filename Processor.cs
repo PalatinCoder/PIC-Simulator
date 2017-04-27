@@ -184,7 +184,32 @@ namespace PIC_Simulator
 #pragma warning disable IDE1006 // Benennungsstile (Namen müssen mit Großbuchstaben anfangen)
         private void addwf()
         {
-            throw new NotImplementedException();
+            ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
+            ushort value = (ushort)this.memController.GetFile(address);
+            ushort result = (ushort)(this.wreg + value);
+
+            //Set DC Bit
+            if (this.wreg <= 0x0F && result >= 0x10)
+                this.memController.SetBit(0x03, 1);
+            else
+                this.memController.ClearBit(0x03, 1);
+
+            //Set C Bit
+            if ((result & 0xFF00) > 0)
+                this.memController.SetBit(0x03, 0);
+            else
+                this.memController.ClearBit(0x03, 0);
+
+            //Set Z Bit
+            if (result == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
+
+            if ((this.ProgramMemory[pc].Opcode & 0x0080) > 0)
+                this.memController.SetFile(address, (byte)result);
+            else
+                this.wreg = (byte)result;
         }
 
         private void andwf()
