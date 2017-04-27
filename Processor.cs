@@ -271,6 +271,8 @@ namespace PIC_Simulator
 
             if (value == 0)
                 this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
         }
 
         private void decfsz()
