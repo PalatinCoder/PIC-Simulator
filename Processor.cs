@@ -582,7 +582,25 @@ namespace PIC_Simulator
 
         private void sublw()
         {
-            throw new NotImplementedException();
+            byte literal = (byte)(this.ProgramMemory[pc].Opcode & 0x00FF);
+            byte result = (byte)(literal - this.wreg);
+
+            if (this.wreg > literal)
+                this.memController.ClearBit(0x03, 0);
+            else
+                this.memController.SetBit(0x03, 0);
+
+            if ((this.wreg & 0x0F) > (literal & 0x0F))
+                this.memController.ClearBit(0x03, 1);
+            else
+                this.memController.SetBit(0x03, 1);
+
+            if (result == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
+
+            this.wreg = result;
         }
 
         private void xorlw()
