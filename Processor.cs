@@ -120,7 +120,7 @@ namespace PIC_Simulator
             if ((opcode & 0xFF00) == 0x0200)
                 this.subwf();
 
-            if ((opcode & 0xFF00) == 0x0E00)
+            if ((opcode & 0xFF00) == 0x0D00)
                 this.swapf();
 
             if ((opcode & 0xFF00) == 0x0600)
