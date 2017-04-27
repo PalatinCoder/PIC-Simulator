@@ -336,11 +336,6 @@ namespace PIC_Simulator
             this.memController.SetFile(address, this.wreg);
         }
 
-        private void nop()
-        {
-            throw new NotImplementedException();
-        }
-
         private void rlf()
         {
             ushort address = (ushort)(this.ProgramMemory[pc].Opcode & 0x007F);
