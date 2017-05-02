@@ -238,6 +238,7 @@ namespace PIC_Simulator
         {
             ushort address = (ushort)(this.GetOpcode() & 0x007F);
             this.memController.SetFile(address, 0);
+            this.memController.SetZeroFlag();
         }
 
         private void clrw()
