@@ -51,7 +51,6 @@ namespace PIC_Simulator
         public void Step()
         {
             this.Decode();
-            this.memController.IncPC();
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.GetPC()].LineNumber - 1);
         }
 
@@ -215,6 +214,8 @@ namespace PIC_Simulator
                 this.memController.SetFile(address, (byte)result);
             else
                 this.wreg = (byte)result;
+
+            this.memController.IncPC();
         }
 
         private void andwf()
@@ -232,6 +233,8 @@ namespace PIC_Simulator
                 this.memController.SetZeroFlag();
             else
                 this.memController.ClearZeroFlag();
+
+            this.memController.IncPC();
         }
 
         private void clrf()
@@ -239,12 +242,16 @@ namespace PIC_Simulator
             ushort address = (ushort)(this.GetOpcode() & 0x007F);
             this.memController.SetFile(address, 0);
             this.memController.SetZeroFlag();
+
+            this.memController.IncPC();
         }
 
         private void clrw()
         {
             this.wreg = 0;
             this.memController.SetZeroFlag();
+
+            this.memController.IncPC();
         }
 
         private void comf()
@@ -257,6 +264,8 @@ namespace PIC_Simulator
                 this.memController.SetFile(address, result);
             else
                 this.wreg = result;
+
+            this.memController.IncPC();
         }
 
         private void decf()
@@ -274,6 +283,8 @@ namespace PIC_Simulator
                 this.memController.SetZeroFlag();
             else
                 this.memController.ClearZeroFlag();
+
+            this.memController.IncPC();
         }
 
         private void decfsz()
@@ -292,6 +303,8 @@ namespace PIC_Simulator
                 this.twoCycles = true;
                 this.memController.IncPC();
             }
+
+            this.memController.IncPC();
         }
 
         private void incf()
@@ -309,6 +322,8 @@ namespace PIC_Simulator
                 this.memController.SetZeroFlag();
             else
                 this.memController.ClearZeroFlag();
+
+            this.memController.IncPC();
         }
 
         private void incfsz()
@@ -327,6 +342,8 @@ namespace PIC_Simulator
                 this.twoCycles = true;
                 this.memController.IncPC();  //Programmcounter hochzaehlen, um naechsten Befehl zu ueberspringen
             }
+
+            this.memController.IncPC();
         }
 
         private void iorwf()
@@ -344,6 +361,8 @@ namespace PIC_Simulator
                 this.memController.SetZeroFlag();
             else
                 this.memController.ClearZeroFlag();
+
+            this.memController.IncPC();
         }
 
         private void movf()
@@ -361,12 +380,16 @@ namespace PIC_Simulator
                 this.memController.SetZeroFlag();
             else
                 this.memController.ClearZeroFlag();
+
+            this.memController.IncPC();
         }
 
         private void movwf()
         {
             ushort address = (ushort)(this.GetOpcode() & 0x007F);
             this.memController.SetFile(address, this.wreg);
+
+            this.memController.IncPC();
         }
 
         private void rlf()
@@ -384,6 +407,8 @@ namespace PIC_Simulator
                 this.memController.SetBit(0x03, 0);
             else
                 this.memController.ClearBit(0x03, 0);
+
+            this.memController.IncPC();
         }
 
         private void rrf()
@@ -400,6 +425,8 @@ namespace PIC_Simulator
                 this.memController.SetBit(0x03, 0);
             else
                 this.memController.ClearBit(0x03, 0);
+
+            this.memController.IncPC();
         }
 
         private void subwf()
@@ -428,6 +455,8 @@ namespace PIC_Simulator
                 this.memController.SetFile(address, result);
             else
                 this.wreg = result;
+
+            this.memController.IncPC();
         }
 
         private void swapf()
@@ -443,6 +472,8 @@ namespace PIC_Simulator
                 this.memController.SetFile(address, value);
             else
                 this.wreg = value;
+
+            this.memController.IncPC();
         }
 
         private void xorwf()
@@ -456,6 +487,8 @@ namespace PIC_Simulator
                 this.memController.SetFile(address, result);
             else
                 this.wreg = result;
+
+            this.memController.IncPC();
         }
 
         private void bcf()
@@ -463,6 +496,8 @@ namespace PIC_Simulator
             byte bit = (byte)((this.GetOpcode() & 0x0380) >> 7);
             ushort address = (ushort)(this.GetOpcode() & 0x007F);
             this.memController.ClearBit(address, bit);
+
+            this.memController.IncPC();
         }
 
         private void bsf()
@@ -470,6 +505,8 @@ namespace PIC_Simulator
             byte bit = (byte)((this.GetOpcode() & 0x0380) >> 7);
             ushort address = (ushort)(this.GetOpcode() & 0x007F);
             this.memController.SetBit(address, bit);
+
+            this.memController.IncPC();
         }
 
         private void btfsc()
@@ -483,6 +520,8 @@ namespace PIC_Simulator
                 this.twoCycles = true;
                 this.memController.IncPC();
             }
+
+            this.memController.IncPC();
         }
 
         private void btfss()
@@ -496,6 +535,8 @@ namespace PIC_Simulator
                 this.twoCycles = true;
                 this.memController.IncPC();
             }
+
+            this.memController.IncPC();
         }
 
         private void addlw()
@@ -522,6 +563,8 @@ namespace PIC_Simulator
                 this.memController.ClearZeroFlag();
 
             this.wreg = (byte)result;
+
+            this.memController.IncPC();
         }
 
         private void andlw()
@@ -533,6 +576,8 @@ namespace PIC_Simulator
                 this.memController.SetZeroFlag();
             else
                 this.memController.ClearZeroFlag();
+
+            this.memController.IncPC();
         }
 
         private void call()
@@ -554,6 +599,8 @@ namespace PIC_Simulator
 
             //TODO WDT auf 0x00 setzen
             //TODO WDT prescaler auf 0 setzen
+
+            this.memController.IncPC();
         }
 
         private void goto_f()
@@ -573,12 +620,16 @@ namespace PIC_Simulator
                 this.memController.SetZeroFlag();
             else
                 this.memController.ClearZeroFlag();
+
+            this.memController.IncPC();
         }
 
         private void movlw()
         {
             byte literal = (byte)(this.GetOpcode() & 0x00FF);
             this.wreg = literal;
+
+            this.memController.IncPC();
         }
 
         private void retfie()
@@ -632,6 +683,8 @@ namespace PIC_Simulator
                 this.memController.ClearZeroFlag();
 
             this.wreg = result;
+
+            this.memController.IncPC();
         }
 
         private void xorlw()
@@ -644,6 +697,7 @@ namespace PIC_Simulator
             else
                 this.memController.ClearZeroFlag();
 
+            this.memController.IncPC();
         }
 #pragma warning restore IDE1006 // Benennungsstile
         #endregion
