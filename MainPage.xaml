@@ -25,6 +25,7 @@
         <local:InverseBooleanConverter x:Key="InverseBoolean" />
         <local:TimeToFrequencyConverter x:Key="TimeToFrequency" />
         <local:StringFormatConverter x:Key="StringFormat" />
+        <local:FormatBinaryConverter x:Key="FormatBinary" />
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="{StaticResource ContentDialogPadding}">
@@ -45,6 +46,11 @@
             <StackPanel Padding="{StaticResource TextControlThemePadding}">
                 <TextBlock Text="W"/>
                 <TextBlock Text="{x:Bind processor.Wreg, Mode=OneWay, Converter={StaticResource StringFormat}, ConverterParameter=0x\{0:X2\} }" />
+            </StackPanel>
+            <StackPanel Padding="{StaticResource TextControlThemePadding}">
+                <TextBlock Text="Status" />
+                
+                <TextBlock Text="{x:Bind processor.memController.StatusRegister, Mode=OneWay, Converter={StaticResource FormatBinary} }" />
             </StackPanel>
         </StackPanel>
 
