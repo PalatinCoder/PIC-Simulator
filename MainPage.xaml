@@ -24,6 +24,7 @@
         <local:InstructionTemplateSelector x:Key="InstructionTemplateSelector" ProcessorInstructionTemplate="{StaticResource ProcessorInstructionTemplate}" GeneralInstructionTemplate="{StaticResource GeneralInstructionTemplate}" />
         <local:InverseBooleanConverter x:Key="InverseBoolean" />
         <local:TimeToFrequencyConverter x:Key="TimeToFrequency" />
+        <local:StringFormatConverter x:Key="StringFormat" />
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="{StaticResource ContentDialogPadding}">
@@ -40,6 +41,12 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Text="Register" Style="{StaticResource TitleTextBlockStyle}" />
+        <StackPanel Grid.Row="1" Grid.Column="0" Padding="{StaticResource TextControlThemePadding}">
+            <StackPanel Padding="{StaticResource TextControlThemePadding}">
+                <TextBlock Text="W"/>
+                <TextBlock Text="{x:Bind processor.Wreg, Mode=OneWay, Converter={StaticResource StringFormat}, ConverterParameter=0x\{0:X2\} }" />
+            </StackPanel>
+        </StackPanel>
 
         <TextBlock Grid.Row="0" Grid.Column="2" Text="Prozessor" Style="{StaticResource TitleTextBlockStyle}" />
         <StackPanel Grid.Row="1" Grid.Column="2" Padding="{StaticResource TextControlThemePadding}">
