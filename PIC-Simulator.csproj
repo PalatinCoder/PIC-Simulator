@@ -98,6 +98,8 @@
     </Compile>
     <Compile Include="MainPageViewModel.cs" />
     <Compile Include="Utility\InstructionTemplateSelector.cs" />
+    <Compile Include="Utility\FormatBinaryConverter.cs" />
+    <Compile Include="Utility\StringFormatConverter.cs" />
     <Compile Include="Utility\TimeToFrequencyConverter.cs" />
     <Compile Include="Utility\InverseBooleanConverter.cs" />
     <Compile Include="ListingFileParser.cs" />
