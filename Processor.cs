@@ -200,7 +200,7 @@ namespace PIC_Simulator
             ushort result = (ushort)(this.Wreg + value);
 
             //Set DC Bit
-            if (this.Wreg <= 0x0F && result >= 0x10)
+            if (value <= 0x0F && this.Wreg <= 0x0F && result >= 0x10)
                 this.memController.SetBit(0x03, 1);
             else
                 this.memController.ClearBit(0x03, 1);
@@ -825,7 +825,6 @@ namespace PIC_Simulator
 
             throw new Exception();
         }
-
 
         private void InitializeMemory()
         {
