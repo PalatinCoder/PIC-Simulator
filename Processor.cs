@@ -30,9 +30,9 @@ namespace PIC_Simulator
             this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-    #region Steuerlogik
+        #region Steuerlogik
 
-    public Processor(ISourcecodeViewInterface viewInterface)
+        public Processor(ISourcecodeViewInterface viewInterface)
         {
             this.ViewInterface = viewInterface;
             Clock.Tick += Clock_Tick;
@@ -740,7 +740,7 @@ namespace PIC_Simulator
 
         internal MemoryController()
         {
-            InitializeMemory();
+            this.InitializeMemory();
         }
 
         internal byte GetFile(ushort address)
@@ -800,15 +800,15 @@ namespace PIC_Simulator
             byte lowerBits = (byte)(pc & 0x00FF);
             byte upperBits = (byte)((pc & 0x1F00) >> 8);
 
-            SetFile(0x02, lowerBits);
-            SetFile(0x0A, upperBits);
+            this.SetFile(0x02, lowerBits);
+            this.SetFile(0x0A, upperBits);
         }
 
         internal void IncPC()
         {
-            ushort pc = GetPC();
+            ushort pc = this.GetPC();
             pc++;
-            SetPC(pc);
+            this.SetPC(pc);
         }
 
         private int DecodeAddress(ushort address)
