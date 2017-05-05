@@ -63,6 +63,7 @@ namespace PIC_Simulator
 
         internal void Reset()
         {
+            this.memController.clearMemory();
             this.memController.SetPC(0);
             this.Wreg = 0;
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
@@ -824,6 +825,14 @@ namespace PIC_Simulator
             if (address >= 0x8C && address <= 0xCF) { return address - 0x80; }
 
             throw new Exception();
+        }
+
+        internal void clearMemory()
+        {
+            for (int i = 0; i <= 0x5B; i++)
+            {
+                this.Memory[i] = 0;
+            }
         }
 
         private void InitializeMemory()
