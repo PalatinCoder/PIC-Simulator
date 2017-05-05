@@ -552,7 +552,7 @@ namespace PIC_Simulator
             ushort result = (ushort)(literal + this.Wreg);
 
             //Set DC Bit
-            if (literal <= 0x0F && this.wreg <= 0x0F && result >= 0x10)
+            if (literal <= 0x0F && this.Wreg <= 0x0F && result >= 0x10)
                 this.memController.SetBit(0x03, 1);
             else
                 this.memController.ClearBit(0x03, 1);
