@@ -409,7 +409,11 @@ namespace PIC_Simulator
             byte newCarry = (byte)((value & 0x0100) >> 8);
             byte newValue = (byte)(value + carry);
 
-            this.memController.SetFile(address, newValue);
+            if ((this.GetOpcode() & 0x0080) > 0)
+                this.memController.SetFile(address, newValue);
+            else
+                this.Wreg = newValue;
+
             if (newCarry == 1)
                 this.memController.SetBit(0x03, 0);
             else
@@ -427,7 +431,11 @@ namespace PIC_Simulator
             byte newCarry = (byte)(value & 0x01);
             value = (byte)((value >> 1) + (carry << 7));
 
-            this.memController.SetFile(address, value);
+            if ((this.GetOpcode() & 0x0080) > 0)
+                this.memController.SetFile(address, value);
+            else
+                this.Wreg = value;
+
             if (newCarry == 1)
                 this.memController.SetBit(0x03, 0);
             else
