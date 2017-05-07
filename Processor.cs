@@ -818,7 +818,8 @@ namespace PIC_Simulator
             // General purpose registers (Bank2): 0x8C - 0xCF -> gemapped auf 0x0C - 0x4F
 
             // Speicherlayout: SPR1 - GPR - SPR2 
-            if (address >= 0x00 && address <= 0x4F) { return address; }
+            if (address == 0x00) { return ((this.GetBit(0x03, 7) << 7) | this.GetFile(0x04)); }
+            if (address >= 0x01 && address <= 0x4F) { return (address); }
             if ((address >= 0x50 && address <= 0x7F) || (address >= 0xD0 && address <= 0xFF)) { return 0; }
             if (address >= 0x80 && address <= 0x8B) { return address - 0x30; }
             if (address >= 0x8C && address <= 0xCF) { return address - 0x80; }
