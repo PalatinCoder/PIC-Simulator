@@ -833,6 +833,7 @@ namespace PIC_Simulator
             {
                 this.Memory[i] = 0;
             }
+            this.OnPropertyChanged("StatusRegister");
         }
 
         private void InitializeMemory()
