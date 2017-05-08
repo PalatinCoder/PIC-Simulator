@@ -734,7 +734,7 @@ namespace PIC_Simulator
         }
         internal byte StatusRegister { get { return this.GetFile(0x03); } }
 
-        internal ObservableCollection<byte> Memory = new ObservableCollection<byte>();
+        internal ObservableCollection<Utility.BindableByte> Memory = new ObservableCollection<Utility.BindableByte>();
         //TODO Low Order 8 Bits des program counters sind an Adresse 0x02 (PCL)
 
         internal MemoryController()
