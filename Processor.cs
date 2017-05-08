@@ -600,10 +600,10 @@ namespace PIC_Simulator
             // TODO two cycles
             // Dokumentation sagt PCLATH<4:3> nach PC<12:11>
             // Dadurch wird Bit 2 komplett übergangen.
-            ushort pclath = (ushort)((this.memController.GetPC() & 0x1800) >> 1);
+            ushort pclath = (ushort)(this.memController.GetFile(0x0A) & 0x18);
             ushort address = (ushort)(this.GetOpcode() & 0x07FF);
             this.Stack.Push((ushort)(this.memController.GetPC() + 1));
-            this.memController.SetPC((ushort)(address + pclath));
+            this.memController.SetPC((ushort)(address | (pclath << 8)));
         }
 
         private void clrwdt()
@@ -621,9 +621,9 @@ namespace PIC_Simulator
         private void goto_f()
         {
             //TODO two cycles
-            ushort pclath = (ushort)((this.memController.GetPC() & 0x1800) >> 1);
+            ushort pclath = (ushort)(this.memController.GetFile(0x0A) & 0x18);
             ushort address = (ushort)(this.GetOpcode() & 0x07FF);
-            this.memController.SetPC((ushort)(address + pclath));
+            this.memController.SetPC((ushort)(address | (pclath << 8)));
         }
 
         private void iorlw()
@@ -735,6 +735,7 @@ namespace PIC_Simulator
         internal byte StatusRegister { get { return this.GetFile(0x03); } }
 
         internal ObservableCollection<Utility.BindableByte> Memory = new ObservableCollection<Utility.BindableByte>();
+        private ushort pc = 0;
         //TODO Low Order 8 Bits des program counters sind an Adresse 0x02 (PCL)
 
         internal MemoryController()
@@ -753,6 +754,11 @@ namespace PIC_Simulator
             int index = DecodeAddress(address);
             this.Memory[index] = value;
             if (address == 0x03) this.OnPropertyChanged("StatusRegister");
+            if (address == 0x02) // Set PCL
+            {
+                ushort pclath = (ushort)(this.GetFile(0x0A) & 0x1F);
+                this.pc = (ushort)(value | (pclath << 8));
+            }
         }
 
         internal void SetZeroFlag()
@@ -787,27 +793,19 @@ namespace PIC_Simulator
 
         internal ushort GetPC()
         {
-            ushort lowerBits = (ushort)GetFile(0x02);
-            ushort upperBits = (ushort)GetFile(0x0A);
-            ushort pc = (ushort)((upperBits << 8) + lowerBits);
-
-            return pc;
+            return this.pc;
         }
 
         internal void SetPC(ushort pc)
         {
             byte lowerBits = (byte)(pc & 0x00FF);
-            byte upperBits = (byte)((pc & 0x1F00) >> 8);
-
             this.SetFile(0x02, lowerBits);
-            this.SetFile(0x0A, upperBits);
+            this.pc = pc;
         }
 
         internal void IncPC()
         {
-            ushort pc = this.GetPC();
-            pc++;
-            this.SetPC(pc);
+            this.SetPC((ushort)(this.pc + 1));
         }
 
         private int DecodeAddress(ushort address)
