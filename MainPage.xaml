@@ -54,6 +54,15 @@
             </StackPanel>
         </StackPanel>
 
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Speicher" Style="{StaticResource TitleTextBlockStyle}" />
+        <GridView ItemsSource="{x:Bind processor.memController.Memory}" Grid.Row="1" Grid.Column="1">
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid MaximumRowsOrColumns="16" Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+        </GridView>
+
         <TextBlock Grid.Row="0" Grid.Column="2" Text="Prozessor" Style="{StaticResource TitleTextBlockStyle}" />
         <StackPanel Grid.Row="1" Grid.Column="2" Padding="{StaticResource TextControlThemePadding}">
             <TextBlock Text="Quarzfrequenz (MHz)" />
