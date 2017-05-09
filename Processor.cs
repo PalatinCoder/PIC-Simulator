@@ -63,7 +63,7 @@ namespace PIC_Simulator
 
         internal void Reset()
         {
-            this.memController.clearMemory();
+            this.memController.ClearMemory();
             this.memController.PC = 0;
             this.Wreg = 0;
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
@@ -823,7 +823,7 @@ namespace PIC_Simulator
             throw new Exception();
         }
 
-        internal void clearMemory()
+        internal void ClearMemory()
         {
             for (int i = 0; i <= 0x5B; i++)
             {
