@@ -49,8 +49,11 @@
             </StackPanel>
             <StackPanel Padding="{StaticResource TextControlThemePadding}">
                 <TextBlock Text="Status" />
-                
                 <TextBlock Text="{x:Bind processor.memController.StatusRegister, Mode=OneWay, Converter={StaticResource FormatBinary} }" />
+            </StackPanel>
+            <StackPanel Padding="{StaticResource TextControlThemePadding}">
+                <TextBlock Text="PC" />
+                <TextBlock Text="{x:Bind processor.memController.PC, Mode=OneWay, Converter={StaticResource StringFormat}, ConverterParameter=0x\{0:X2\} }" />
             </StackPanel>
         </StackPanel>
 
