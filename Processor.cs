@@ -64,6 +64,7 @@ namespace PIC_Simulator
         internal void Reset()
         {
             this.memController.clearMemory();
+            this.memController.SetPC(0);
             this.Wreg = 0;
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
         }
