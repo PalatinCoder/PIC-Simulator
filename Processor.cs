@@ -18,7 +18,7 @@ namespace PIC_Simulator
 
         /// <summary>
         /// Der interne Takt für (!)µC-Zyklen
-        /// Beachten: f_PIC = f_Quarz / 4, also 4 Quarz Schwingungen 
+        /// Beachten: f_PIC = f_Quarz / 4, also 4 Quarz Schwingungen
         /// ergeben einen µC-Takt
         /// </summary>
         public DispatcherTimer Clock = new DispatcherTimer();
@@ -379,8 +379,8 @@ namespace PIC_Simulator
             bool destination = ((this.GetOpcode() & 0x0080) == 0x0080);
             byte value = this.memController.GetFile(address);
 
-            // if d == 0, value von f in w-register schreiben, 
-            // andernfalls f in f schreiben (redundant) 
+            // if d == 0, value von f in w-register schreiben,
+            // andernfalls f in f schreiben (redundant)
             if (!destination)
                 this.Wreg = value;
 
@@ -751,7 +751,6 @@ namespace PIC_Simulator
                 this.OnPropertyChanged("PC");
             }
         }
-        //TODO Low Order 8 Bits des program counters sind an Adresse 0x02 (PCL)
 
         internal MemoryController()
         {
@@ -813,7 +812,7 @@ namespace PIC_Simulator
             // General purpose registers (Bank1): 0x0C - 0x4F
             // General purpose registers (Bank2): 0x8C - 0xCF -> gemapped auf 0x0C - 0x4F
 
-            // Speicherlayout: SPR1 - GPR - SPR2 
+            // Speicherlayout: SPR1 - GPR - SPR2
             if (address == 0x00) { return ((this.GetBit(0x03, 7) << 7) | this.GetFile(0x04)); }
             if (address >= 0x01 && address <= 0x4F) { return (address); }
             if ((address >= 0x50 && address <= 0x7F) || (address >= 0xD0 && address <= 0xFF)) { return 0; }
