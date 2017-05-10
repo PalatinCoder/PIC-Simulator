@@ -200,19 +200,19 @@ namespace PIC_Simulator
             ushort value = (ushort)this.memController.GetFile(address);
             ushort result = (ushort)(this.Wreg + value);
 
-            //Set DC Bit
+            // DC-Flag handling
             if (value <= 0x0F && this.Wreg <= 0x0F && result >= 0x10)
                 this.memController.SetBit(0x03, 1);
             else
                 this.memController.ClearBit(0x03, 1);
 
-            //Set C Bit
+            // C-Flag handling
             if ((result & 0xFF00) > 0)
                 this.memController.SetBit(0x03, 0);
             else
                 this.memController.ClearBit(0x03, 0);
 
-            //Set Z Bit
+            // Z-Flag handling
             if (result == 0)
                 this.memController.SetZeroFlag();
             else
@@ -237,6 +237,7 @@ namespace PIC_Simulator
             else
                 this.Wreg = result;
 
+            // Z-Flag handling
             if (result == 0)
                 this.memController.SetZeroFlag();
             else
@@ -287,6 +288,7 @@ namespace PIC_Simulator
             else
                 this.Wreg = value;
 
+            // Z-Flag handling
             if (value == 0)
                 this.memController.SetZeroFlag();
             else
@@ -326,6 +328,7 @@ namespace PIC_Simulator
             else
                 this.Wreg = result;
 
+            // Z-Flag handling
             if (result == 0)
                 this.memController.SetZeroFlag();
             else
@@ -365,6 +368,7 @@ namespace PIC_Simulator
             else
                 this.Wreg = result;
 
+            // Z-Flag handling
             if (result == 0)
                 this.memController.SetZeroFlag();
             else
@@ -384,6 +388,7 @@ namespace PIC_Simulator
             if (!destination)
                 this.Wreg = value;
 
+            // Z-Flag handling
             if (value == 0)
                 this.memController.SetZeroFlag();
             else
@@ -415,6 +420,7 @@ namespace PIC_Simulator
             else
                 this.Wreg = newValue;
 
+            // C-Flag handling
             if (newCarry == 1)
                 this.memController.SetBit(0x03, 0);
             else
@@ -437,6 +443,7 @@ namespace PIC_Simulator
             else
                 this.Wreg = value;
 
+            // C-Flag handling
             if (newCarry == 1)
                 this.memController.SetBit(0x03, 0);
             else
@@ -452,21 +459,25 @@ namespace PIC_Simulator
 
             byte result = (byte)(value - this.Wreg);
 
+            // C-Flag handling
             if (this.Wreg > value)
                 this.memController.ClearBit(0x03, 0);
             else
                 this.memController.SetBit(0x03, 0);
 
+            // DC-Flag handling
             if ((this.Wreg & 0x0F) > (value & 0x0F))
                 this.memController.ClearBit(0x03, 1);
             else
                 this.memController.SetBit(0x03, 1);
 
+            // Z-Flag handling
             if (result == 0)
                 this.memController.SetZeroFlag();
             else
                 this.memController.ClearZeroFlag();
 
+            // In W-reg oder file
             if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, result);
             else
@@ -632,6 +643,7 @@ namespace PIC_Simulator
             byte literal = (byte)(this.GetOpcode() & 0x00FF);
             this.Wreg = (byte)(literal | this.Wreg);
 
+            // Z-Flag handling
             if (this.Wreg == 0)
                 this.memController.SetZeroFlag();
             else
@@ -683,16 +695,19 @@ namespace PIC_Simulator
             byte literal = (byte)(this.GetOpcode() & 0x00FF);
             byte result = (byte)(literal - this.Wreg);
 
+            // C-Flag handling
             if (this.Wreg > literal)
                 this.memController.ClearBit(0x03, 0);
             else
                 this.memController.SetBit(0x03, 0);
 
+            // DC-Flag handling
             if ((this.Wreg & 0x0F) > (literal & 0x0F))
                 this.memController.ClearBit(0x03, 1);
             else
                 this.memController.SetBit(0x03, 1);
-
+            
+            // Z-Flag handling
             if (result == 0)
                 this.memController.SetZeroFlag();
             else
@@ -708,6 +723,7 @@ namespace PIC_Simulator
             byte literal = (byte)(this.GetOpcode() & 0x00FF);
             this.Wreg = (byte)(literal ^ this.Wreg);
 
+            // Z-Flag handling
             if (this.Wreg == 0)
                 this.memController.SetZeroFlag();
             else
@@ -788,20 +804,21 @@ namespace PIC_Simulator
 
         internal byte GetBit(ushort address, byte bit)
         {
+            // Gibt entweder 1 oder 0 zurück, also den Wert des Bits, nicht nur das maskierte Byte
             return (byte)((this.GetFile(address) & (1 << bit)) >> bit);
         }
 
         internal void SetBit(ushort address, byte bit)
         {
             byte value = this.GetFile(address);
-            value |= (byte)(1 << bit);
+            value |= (byte)(1 << bit); // Wert mit einer geshifteten 1 verodern, um ein Bit zu setzen
             this.SetFile(address, value);
         }
 
         internal void ClearBit(ushort address, byte bit)
         {
             byte value = this.GetFile(address);
-            value &= (byte)~(1 << bit);
+            value &= (byte)~(1 << bit); // Wert '1' shiften und danach umkehren - Das dann mit value verunden, um ein Bit zu clearen
             this.SetFile(address, value);
         }
 
@@ -813,6 +830,7 @@ namespace PIC_Simulator
             // General purpose registers (Bank2): 0x8C - 0xCF -> gemapped auf 0x0C - 0x4F
 
             // Speicherlayout: SPR1 - GPR - SPR2
+            // Indirekte Addressierung: Bei Zugriff auf Adresse 0x00 wird Wert der File 0x04 zurückgegeben und mit IRP Bit des Statusregisters verunded
             if (address == 0x00) { return ((this.GetBit(0x03, 7) << 7) | this.GetFile(0x04)); }
             if (address >= 0x01 && address <= 0x4F) { return (address); }
             if ((address >= 0x50 && address <= 0x7F) || (address >= 0xD0 && address <= 0xFF)) { return 0; }
