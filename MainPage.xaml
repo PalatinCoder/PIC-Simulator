@@ -53,7 +53,7 @@
             </StackPanel>
             <StackPanel Padding="{StaticResource TextControlThemePadding}">
                 <TextBlock Text="PC" />
-                <TextBlock Text="{x:Bind processor.memController.PC, Mode=OneWay, Converter={StaticResource StringFormat}, ConverterParameter=0x\{0:X2\} }" />
+                <TextBlock Text="{x:Bind processor.memController.PC, Mode=OneWay, Converter={StaticResource StringFormat}, ConverterParameter=0x\{0:X4\} }" />
             </StackPanel>
         </StackPanel>
 
