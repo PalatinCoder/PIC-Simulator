@@ -14,7 +14,7 @@ namespace PIC_Simulator
         private byte wreg;
         internal byte Wreg { get { return wreg; } set { wreg = value; this.OnPropertyChanged(); } }
         private bool twoCycles;
-        private Stack<ushort> Stack = new Stack<ushort>();
+        internal ObservableStack<ushort> Stack = new ObservableStack<ushort>();
 
         /// <summary>
         /// Der interne Takt für (!)µC-Zyklen

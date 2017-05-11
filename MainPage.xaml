@@ -73,9 +73,11 @@
             <Slider Minimum="1" Maximum="20" TickPlacement="Outside" TickFrequency="1" Value="{Binding Text,ElementName=frequency,Mode=TwoWay}" IsThumbToolTipEnabled="False"/>
         </StackPanel>
 
+        <TextBlock Grid.Row="2" Grid.Column="2" Text="Stack" Style="{StaticResource TitleTextBlockStyle}" />
+        <ListView Grid.Row="3" Grid.Column="2" ItemsSource="{x:Bind processor.Stack}" />
 
         <TextBlock Grid.Row="2" Text="Programmlisting" Style="{StaticResource TitleTextBlockStyle}" />
-        <ListView x:Name="SourcecodeListingView" ItemsSource="{Binding Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemTemplateSelector="{StaticResource InstructionTemplateSelector}" />
+        <ListView x:Name="SourcecodeListingView" ItemsSource="{Binding Sourcecode}" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" ItemTemplateSelector="{StaticResource InstructionTemplateSelector}" />
     </Grid>
     <Page.BottomAppBar>
         <CommandBar>
