@@ -14,7 +14,11 @@ namespace PIC_Simulator
         private byte wreg;
         internal byte Wreg { get { return wreg; } set { wreg = value; this.OnPropertyChanged(); } }
         private bool twoCycles;
+        private short timer_waitcycles;
         internal ObservableStack<ushort> Stack = new ObservableStack<ushort>();
+        internal static ushort INTCON = 0x0B;
+        internal static ushort OPTION_REG = 0x81;
+        private byte tmpPORTA, tmpPORTB, tmpINTCON;
 
         /// <summary>
         /// Der interne Takt für (!)µC-Zyklen
@@ -39,6 +43,7 @@ namespace PIC_Simulator
             this.Clock.Interval = new TimeSpan(20); // 20 Ticks ^= 2000 ns ^= 2MHz Quarzfrequenz
             this.memController = new MemoryController();
             this.twoCycles = false;
+            tmpPORTA = tmpPORTB = tmpINTCON = 0;
         }
 
         private ushort GetOpcode()
@@ -67,6 +72,69 @@ namespace PIC_Simulator
             this.memController.PC = 0;
             this.Wreg = 0;
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
+        }
+
+        private void Tmr0Tick()
+        {
+            if (this.memController.GetBit(OPTION_REG, 5) == 0)
+            {
+                // Timer Modus wenn T0CS clear
+                if (timer_waitcycles <= 0)
+                    IncTimer();
+                else
+                    timer_waitcycles--;
+            }
+            else
+            {
+                // Counter Modus wenn T0CS gesetzt
+                if (this.memController.GetBit(OPTION_REG, 4) == 0)
+                {
+                    // Counter schaltet bei rising edge
+                    if ((this.memController.GetBit(INTCON, 4) == 1) && ((tmpINTCON & 0x10) == 0))
+                        IncTimer();
+                }
+                else
+                {
+                    // Counter schaltet bei falling edge
+                    if ((this.memController.GetBit(INTCON, 4) == 0) && ((tmpINTCON & 0x10) == 1))
+                        IncTimer();
+                }
+            }
+        }
+
+        private void IncTimer()
+        {
+            byte timer = this.memController.GetFile(0x01);
+            timer++;
+            this.memController.SetFile(0x01, timer);
+            timer_waitcycles = 0;
+
+            if (timer == 0)
+            {
+                // Overflow des Timers -> Interrupt auslösen (T0IF)
+                this.memController.SetBit(INTCON, 2);
+            }
+        }
+
+        private void CheckForInterrupts()
+        {
+            ushort INTCON = 0x0B;
+            ushort PORTB = 0x06;
+            // Testen ob GIE Bit gesetzt ist (ansonsten nicht auf Interrupts prüfen)
+            if (this.memController.GetBit(INTCON, 7) == 1)
+            {
+                // Bei Interrupt wird an Stelle 0x04 gesprungen
+                // GIE löschen
+                // Code ausfähren
+                // GIE wieder setzen
+
+                // INT (RB0) Interrupt
+
+
+
+                // PORTB Interrupt:
+                //if (this.memController.GetBit(PORTB, 3))...
+            }
         }
 
         /// <summary>
