@@ -16,6 +16,7 @@ namespace PIC_Simulator
         private bool twoCycles;
         private short timer_waitcycles;
         internal ObservableStack<ushort> Stack = new ObservableStack<ushort>();
+        internal static ushort PORTB = 0x06;
         internal static ushort INTCON = 0x0B;
         internal static ushort OPTION_REG = 0x81;
         private byte tmpPORTA, tmpPORTB, tmpINTCON;
@@ -118,8 +119,6 @@ namespace PIC_Simulator
 
         private void CheckForInterrupts()
         {
-            ushort INTCON = 0x0B;
-            ushort PORTB = 0x06;
             // Testen ob GIE Bit gesetzt ist (ansonsten nicht auf Interrupts prüfen)
             if (this.memController.GetBit(INTCON, 7) == 1)
             {
