@@ -706,7 +706,7 @@ namespace PIC_Simulator
                 this.memController.ClearBit(0x03, 1);
             else
                 this.memController.SetBit(0x03, 1);
-            
+
             // Z-Flag handling
             if (result == 0)
                 this.memController.SetZeroFlag();
@@ -764,6 +764,7 @@ namespace PIC_Simulator
                 byte lowerBits = (byte)(value & 0x00FF);
                 this.SetFile(0x02, lowerBits);
                 this.pc = value;
+                // GUI update callback
                 this.OnPropertyChanged("PC");
             }
         }
