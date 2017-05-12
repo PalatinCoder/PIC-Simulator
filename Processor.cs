@@ -775,14 +775,20 @@ namespace PIC_Simulator
 
         internal byte GetFile(ushort address)
         {
-            int index = DecodeAddress(address);
+            int index = DecodeAddress(address)[0];
             return this.Memory[index];
         }
 
         internal void SetFile(ushort address, byte value)
         {
-            int index = DecodeAddress(address);
-            this.Memory[index] = value;
+            ushort[] addresses = DecodeAddress(address);
+
+            foreach (ushort element in addresses)
+            {
+                this.Memory[element] = value;
+            }
+
+            // Statusregister in GUI updaten
             if (address == 0x03) this.OnPropertyChanged("StatusRegister");
             if (address == 0x02) // Set PCL
             {
@@ -822,22 +828,22 @@ namespace PIC_Simulator
             this.SetFile(address, value);
         }
 
-        private int DecodeAddress(ushort address)
+        private ushort[] DecodeAddress(ushort address)
         {
-            // Special purpose registers (Bank1): 0x00 - 0x0B
-            // Special purpose registers (Bank2): 0x80 - 0x8B -> gemapped auf 0x50 - 0x5B
-            // General purpose registers (Bank1): 0x0C - 0x4F
-            // General purpose registers (Bank2): 0x8C - 0xCF -> gemapped auf 0x0C - 0x4F
+            // Bankselect (rp0) holen um bei nichtgemappten Adressen die richtige Bank zu wählen
+            ushort rp0 = (ushort)((this.Memory[0x03] & 0x20) >> 5);
+            ushort bAddress = (ushort)(address & 0x7F);
 
-            // Speicherlayout: SPR1 - GPR - SPR2
-            // Indirekte Addressierung: Bei Zugriff auf Adresse 0x00 wird Wert der File 0x04 zurückgegeben und mit IRP Bit des Statusregisters verunded
-            if (address == 0x00) { return ((this.GetBit(0x03, 7) << 7) | this.GetFile(0x04)); }
-            if (address >= 0x01 && address <= 0x4F) { return (address); }
-            if ((address >= 0x50 && address <= 0x7F) || (address >= 0xD0 && address <= 0xFF)) { return 0; }
-            if (address >= 0x80 && address <= 0x8B) { return address - 0x30; }
-            if (address >= 0x8C && address <= 0xCF) { return address - 0x80; }
+            // Indirekte Addressierung:
+            // Bei Zugriff auf Adresse 0x00 wird die Adresse in File 0x04 zurückgegeben und mit IRP Bit des Statusregisters verodert
+            if (bAddress == 0x00) { return DecodeAddress((ushort)((this.GetBit(0x03, 7) << 7) | this.GetFile(0x04))); }
 
-            throw new Exception();
+            // Direkte Addressierung:
+            // GPRs und SFRs, die gemapped sind
+            if ((bAddress >= 0x0A && bAddress <= 0x7F) || (bAddress >= 0x02 && bAddress <= 0x04)) return new ushort[] { bAddress, (ushort)(address | 0x80) };
+
+            // Der ganze Rest
+            return new ushort[] { (ushort)(address & rp0) };
         }
 
         internal void ClearMemory()
