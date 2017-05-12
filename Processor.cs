@@ -842,7 +842,7 @@ namespace PIC_Simulator
 
         internal void ClearMemory()
         {
-            for (int i = 0; i <= 0x5B; i++)
+            for (int i = 0; i <= 0xFF; i++)
             {
                 this.Memory[i] = 0;
             }
@@ -851,7 +851,7 @@ namespace PIC_Simulator
 
         private void InitializeMemory()
         {
-            for (int i = 0; i <= 0x5B; i++)
+            for (int i = 0; i <= 0xFF; i++)
             {
                 this.Memory.Add(0);
             }
