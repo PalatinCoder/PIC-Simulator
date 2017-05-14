@@ -119,5 +119,10 @@ namespace PIC_Simulator
             ProcessorInstruction instruction = (ProcessorInstruction)button.DataContext;
             instruction.IsBreakpoint = (bool)button.IsChecked;
         }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.processor.Reset();
+        }
     }
 }

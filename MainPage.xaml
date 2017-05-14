@@ -87,6 +87,7 @@
             <AppBarButton Icon="Play" Label="Start" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" Click="RunButton_Click" />
             <AppBarButton Icon="Stop" Label="Stop" IsEnabled="{Binding IsProgramRunning}" Click="StopButton_Click" />
             <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" Click="StepButton_Click" />
+            <AppBarButton Icon="Undo" Label="Reset" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" Click="ResetButton_Click" />
             <AppBarSeparator />
             <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" />
             <CommandBar.SecondaryCommands>
