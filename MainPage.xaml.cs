@@ -52,6 +52,7 @@ namespace PIC_Simulator
                 await ListingFileParser.Parse(file, SourcecodeLineParsed);
                 this.processor.Reset();
                 this.statusbar.Text = file.DisplayName + " geladen";
+                this.ViewModel.IsSimInitialized = true;
             }
             catch (ArgumentOutOfRangeException)
             {
