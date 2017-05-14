@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -18,6 +19,7 @@ namespace PIC_Simulator
         /// Zur internen Verwendung
         /// </summary>
         private bool _isSimInitialized = false;
+        private TimeSpan _stopwatch = new TimeSpan();
 
         /// <summary>
         /// Public und read only, daran ist das ListView gebunden
@@ -62,6 +64,15 @@ namespace PIC_Simulator
             }
         }
 
+        public TimeSpan Stopwatch
+        {
+            get { return this._stopwatch; }
+            set
+            {
+                this._stopwatch = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 

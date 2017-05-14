@@ -125,5 +125,15 @@ namespace PIC_Simulator
         {
             this.processor.Reset();
         }
+
+        public void IncreaseStopwatch(TimeSpan value)
+        {
+            this.ViewModel.Stopwatch = this.ViewModel.Stopwatch.Add(value);
+        }
+
+        public void ResetStopwatch()
+        {
+            this.ViewModel.Stopwatch = new TimeSpan();
+        }
     }
 }

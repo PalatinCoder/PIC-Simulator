@@ -65,6 +65,7 @@ namespace PIC_Simulator
 
         public void Step()
         {
+            this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
             this.Decode();
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
         }
@@ -74,6 +75,7 @@ namespace PIC_Simulator
             this.memController.ClearMemory();
             this.memController.PC = 0;
             this.Wreg = 0;
+            ViewInterface.ResetStopwatch();
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
         }
 
@@ -747,6 +749,8 @@ namespace PIC_Simulator
     {
         void SetCurrentSourcecodeLine(int line);
         void SetIsProgrammRunning(bool value);
+        void IncreaseStopwatch(TimeSpan value);
+        void ResetStopwatch();
     }
 
 

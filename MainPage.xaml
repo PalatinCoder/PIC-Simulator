@@ -70,6 +70,8 @@
             <TextBlock Text="Quarzfrequenz (MHz)" />
             <TextBox ToolTipService.ToolTip="Es können beliebige Werte, auch Kommazahlen, eingetragen werden." x:Name="frequency" InputScope="Digits" TextAlignment="Right" Text="{x:Bind processor.Clock.Interval, Mode=TwoWay, Converter={StaticResource TimeToFrequency}}" />
             <Slider Minimum="1" Maximum="20" TickPlacement="Outside" TickFrequency="1" Value="{Binding Text,ElementName=frequency,Mode=TwoWay}" IsThumbToolTipEnabled="False"/>
+            <TextBlock Text="Laufzeit" />
+            <TextBlock Text="{Binding Stopwatch}" />
         </StackPanel>
 
         <TextBlock Grid.Row="2" Grid.Column="2" Text="Stack" Style="{StaticResource TitleTextBlockStyle}" />
