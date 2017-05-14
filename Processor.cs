@@ -738,6 +738,7 @@ namespace PIC_Simulator
     interface ISourcecodeViewInterface
     {
         void SetCurrentSourcecodeLine(int line);
+        void SetIsProgrammRunning(bool value);
     }
 
 

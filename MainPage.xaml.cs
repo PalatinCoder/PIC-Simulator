@@ -93,6 +93,11 @@ namespace PIC_Simulator
             this.SourcecodeListingView.ScrollIntoView(this.SourcecodeListingView.SelectedItem, ScrollIntoViewAlignment.Leading);
         }
 
+        public void SetIsProgrammRunning(bool value)
+        {
+            this.ViewModel.IsProgramRunning = value;
+        }
+
         private void StepButton_Click(object sender, RoutedEventArgs e)
         {
             this.processor.Step();
