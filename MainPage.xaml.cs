@@ -7,6 +7,7 @@ using Windows.Storage.Pickers;
 using Windows.Storage;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace PIC_Simulator
 {
@@ -113,6 +114,13 @@ namespace PIC_Simulator
         {
             this.processor.Clock.Stop();
             this.ViewModel.IsProgramRunning = false;
+        }
+
+        private void BreakpointToggle_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleButton button = (ToggleButton)sender;
+            ProcessorInstruction instruction = (ProcessorInstruction)button.DataContext;
+            instruction.IsBreakpoint = (bool)button.IsChecked;
         }
     }
 }

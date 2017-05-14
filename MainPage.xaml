@@ -10,7 +10,7 @@
     <Page.Resources>
         <DataTemplate x:Key="ProcessorInstructionTemplate">
             <StackPanel Orientation="Horizontal">
-                <ToggleButton />
+                <ToggleButton Click="BreakpointToggle_Click" />
                 <TextBlock Text="{Binding LineNumber}" Width="30" Margin="10,0,0,0" />
                 <TextBlock Text="{Binding}" FontFamily="Lucida Console, Consolas, Monospace" Foreground="#FF1134D3"/>
             </StackPanel>

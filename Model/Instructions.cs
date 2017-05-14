@@ -44,6 +44,8 @@
         /// </summary>
         public ushort Opcode { get; }
 
+        public bool IsBreakpoint { get; set; }
+
         public ProcessorInstruction(int line, string value, ushort opcode) : base(line, value)
         {
             this.Opcode = opcode;

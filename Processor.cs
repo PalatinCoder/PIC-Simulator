@@ -50,9 +50,18 @@ namespace PIC_Simulator
         private void Clock_Tick(object sender, object e)
         {
             if (this.twoCycles)
+            {
                 this.twoCycles = false;
-            else
-                this.Step();
+                return;
+            }
+            if (this.ProgramMemory[this.memController.PC].IsBreakpoint)
+            {
+                this.Clock.Stop();
+                this.ViewInterface.SetIsProgrammRunning(false);
+                return;
+            }
+
+            this.Step();
         }
 
         public void Step()
