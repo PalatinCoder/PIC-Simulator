@@ -1,12 +1,9 @@
 ﻿using System;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Popups;
-using System.Collections.ObjectModel;
-using Windows.Storage.Pickers;
-using Windows.Storage;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace PIC_Simulator

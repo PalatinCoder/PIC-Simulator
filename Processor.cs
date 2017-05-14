@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml;
 
 namespace PIC_Simulator
 {
