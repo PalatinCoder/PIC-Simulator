@@ -22,7 +22,6 @@
             </StackPanel>
         </DataTemplate>
         <local:InstructionTemplateSelector x:Key="InstructionTemplateSelector" ProcessorInstructionTemplate="{StaticResource ProcessorInstructionTemplate}" GeneralInstructionTemplate="{StaticResource GeneralInstructionTemplate}" />
-        <local:InverseBooleanConverter x:Key="InverseBoolean" />
         <local:TimeToFrequencyConverter x:Key="TimeToFrequency" />
         <local:StringFormatConverter x:Key="StringFormat" />
         <local:FormatBinaryConverter x:Key="FormatBinary" />
