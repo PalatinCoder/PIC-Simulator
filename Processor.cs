@@ -67,10 +67,12 @@ namespace PIC_Simulator
         public void Step()
         {
             this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
+            Tmr0Tick();
             this.Decode();
             if (this.twoCycles)
             {
                 this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
+                Tmr0Tick();
                 this.twoCycles = false;
             }
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
