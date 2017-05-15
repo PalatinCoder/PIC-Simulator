@@ -13,7 +13,8 @@ namespace PIC_Simulator
         private byte wreg;
         internal byte Wreg { get { return wreg; } set { wreg = value; this.OnPropertyChanged(); } }
         private bool twoCycles;
-        private ushort timer_waitcycles;
+        private ushort timer_waitcycles = 0;
+        private ushort timerPrescalerCounter = 0;
         internal ObservableStack<ushort> Stack = new ObservableStack<ushort>();
         internal static ushort PORTB = 0x06;
         internal static ushort INTCON = 0x0B;
@@ -80,9 +81,11 @@ namespace PIC_Simulator
 
         internal void Reset()
         {
+            // TODO Richtige reset Werte
             this.memController.ClearMemory();
             this.memController.PC = 0;
             this.Wreg = 0;
+            this.memController.SetFile(0x81, 0xFF);
             ViewInterface.ResetStopwatch();
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
         }
@@ -92,10 +95,19 @@ namespace PIC_Simulator
             if (this.memController.GetBit(OPTION_REG, 5) == 0)
             {
                 // Timer Modus wenn T0CS clear
-                if (timer_waitcycles <= 0)
+                // Prescaler holen
+                ushort PrescalerRateSelect = (ushort)(this.memController.GetFile(0x81) & 0x07);
+                ushort PrescalerRatio = (ushort)(1 << (PrescalerRateSelect + 1)); // = 2 ^ (PrescalerRateSelect + 1)
+                ushort psa = (ushort)(this.memController.GetBit(0x81, 3));
+
+                if (timer_waitcycles <= 0 && ((psa == 0 && this.timerPrescalerCounter >= PrescalerRatio) || !(psa == 0))) {
+                    if (psa == 0) this.timerPrescalerCounter = 0;
                     IncTimer();
+                }
                 else
                     timer_waitcycles--;
+
+                this.timerPrescalerCounter++;
             }
             else
             {
@@ -151,6 +163,7 @@ namespace PIC_Simulator
         {
             this.timer_waitcycles = 2;
         }
+
         /// <summary>
         /// Diese Routine dekodiert den aktuellen Befehl und ruft die entsprechende
         /// Subroutine zur Ausführung des Maschinenbefehls auf.
@@ -828,7 +841,6 @@ namespace PIC_Simulator
 
     internal class MemoryController : INotifyPropertyChanged
     {
-
         Action EnableWaitCyclesCallback;
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
