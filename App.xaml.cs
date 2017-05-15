@@ -52,7 +52,7 @@ namespace PIC_Simulator
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Zustand von zuvor angehaltener Anwendung laden
+                    
                 }
 
                 // Den Frame im aktuellen Fenster platzieren
@@ -93,7 +93,6 @@ namespace PIC_Simulator
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Anwendungszustand speichern und alle Hintergrundaktivitäten beenden
             deferral.Complete();
         }
     }

@@ -54,11 +54,6 @@ namespace PIC_Simulator
 
         private void Clock_Tick(object sender, object e)
         {
-            if (this.twoCycles)
-            {
-                this.twoCycles = false;
-                return;
-            }
             if (this.ProgramMemory[this.memController.PC].IsBreakpoint)
             {
                 this.Clock.Stop();
@@ -73,6 +68,11 @@ namespace PIC_Simulator
         {
             this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
             this.Decode();
+            if (this.twoCycles)
+            {
+                this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
+                this.twoCycles = false;
+            }
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
         }
 
@@ -686,7 +686,7 @@ namespace PIC_Simulator
 
         private void call()
         {
-            // TODO two cycles
+            this.twoCycles = true;
             // Dokumentation sagt PCLATH<4:3> nach PC<12:11>
             // Dadurch wird Bit 2 komplett übergangen.
             ushort pclath = (ushort)(this.memController.GetFile(0x0A) & 0x18);
@@ -709,7 +709,7 @@ namespace PIC_Simulator
 
         private void goto_f()
         {
-            //TODO two cycles
+            this.twoCycles = true;
             ushort pclath = (ushort)(this.memController.GetFile(0x0A) & 0x18);
             ushort address = (ushort)(this.GetOpcode() & 0x07FF);
             this.memController.PC = ((ushort)(address | (pclath << 8)));
@@ -739,7 +739,7 @@ namespace PIC_Simulator
 
         private void retfie()
         {
-            // TODO two cycles
+            this.twoCycles = true;
             // Set GIE bit:
             this.memController.SetBit(0x0B, 7);
             this.memController.PC = (this.Stack.Pop());
@@ -747,14 +747,14 @@ namespace PIC_Simulator
 
         private void retlw()
         {
-            // TODO two cycles
+            this.twoCycles = true;
             this.Wreg = (byte)(this.GetOpcode() & 0x00FF);
             this.memController.PC = (this.Stack.Pop());
         }
 
         private void return_f()
         {
-            // TODO two cycles
+            this.twoCycles = true;
             this.memController.PC = (this.Stack.Pop());
         }
 
