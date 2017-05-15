@@ -103,7 +103,6 @@
     <Compile Include="Utility\ObservableStack.cs" />
     <Compile Include="Utility\StringFormatConverter.cs" />
     <Compile Include="Utility\TimeToFrequencyConverter.cs" />
-    <Compile Include="Utility\InverseBooleanConverter.cs" />
     <Compile Include="ListingFileParser.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

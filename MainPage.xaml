@@ -10,7 +10,7 @@
     <Page.Resources>
         <DataTemplate x:Key="ProcessorInstructionTemplate">
             <StackPanel Orientation="Horizontal">
-                <ToggleButton />
+                <ToggleButton Click="BreakpointToggle_Click" />
                 <TextBlock Text="{Binding LineNumber}" Width="30" Margin="10,0,0,0" />
                 <TextBlock Text="{Binding}" FontFamily="Lucida Console, Consolas, Monospace" Foreground="#FF1134D3"/>
             </StackPanel>
@@ -22,7 +22,6 @@
             </StackPanel>
         </DataTemplate>
         <local:InstructionTemplateSelector x:Key="InstructionTemplateSelector" ProcessorInstructionTemplate="{StaticResource ProcessorInstructionTemplate}" GeneralInstructionTemplate="{StaticResource GeneralInstructionTemplate}" />
-        <local:InverseBooleanConverter x:Key="InverseBoolean" />
         <local:TimeToFrequencyConverter x:Key="TimeToFrequency" />
         <local:StringFormatConverter x:Key="StringFormat" />
         <local:FormatBinaryConverter x:Key="FormatBinary" />
@@ -71,6 +70,8 @@
             <TextBlock Text="Quarzfrequenz (MHz)" />
             <TextBox ToolTipService.ToolTip="Es können beliebige Werte, auch Kommazahlen, eingetragen werden." x:Name="frequency" InputScope="Digits" TextAlignment="Right" Text="{x:Bind processor.Clock.Interval, Mode=TwoWay, Converter={StaticResource TimeToFrequency}}" />
             <Slider Minimum="1" Maximum="20" TickPlacement="Outside" TickFrequency="1" Value="{Binding Text,ElementName=frequency,Mode=TwoWay}" IsThumbToolTipEnabled="False"/>
+            <TextBlock Text="Laufzeit" />
+            <TextBlock Text="{Binding Stopwatch}" />
         </StackPanel>
 
         <TextBlock Grid.Row="2" Grid.Column="2" Text="Stack" Style="{StaticResource TitleTextBlockStyle}" />
@@ -84,11 +85,12 @@
             <CommandBar.Content>
                 <TextBlock Text="PIC-Simulator" x:Name="statusbar" Margin="12,14" />
             </CommandBar.Content>
-            <AppBarButton Icon="Play" Label="Start" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" Click="RunButton_Click" />
-            <AppBarButton Icon="Stop" Label="Stop" IsEnabled="{Binding IsProgramRunning}" Click="StopButton_Click" />
-            <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" Click="StepButton_Click" />
+            <AppBarButton Icon="Play" Label="Start" IsEnabled="{Binding InverseControlButtonState}" Click="RunButton_Click" />
+            <AppBarButton Icon="Stop" Label="Stop" IsEnabled="{Binding ControlButtonState}" Click="StopButton_Click" />
+            <AppBarButton Icon="Forward" Label="Schritt" IsEnabled="{Binding InverseControlButtonState}" Click="StepButton_Click" />
+            <AppBarButton Icon="Undo" Label="Reset" IsEnabled="{Binding InverseControlButtonState}" Click="ResetButton_Click" />
             <AppBarSeparator />
-            <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" IsEnabled="{Binding IsProgramRunning, Converter={StaticResource InverseBoolean}}" />
+            <AppBarButton Icon="OpenFile" Label="Listing öffnen" Click="OpenFileChooser_Click" />
             <CommandBar.SecondaryCommands>
                 <AppBarButton Icon="Help" Label="Hilfe" Click="HelpButton_Click" />
             </CommandBar.SecondaryCommands>

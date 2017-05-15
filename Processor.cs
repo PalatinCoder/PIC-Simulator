@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using Windows.UI.Xaml;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Windows.UI.Xaml;
 
 namespace PIC_Simulator
 {
@@ -56,13 +55,23 @@ namespace PIC_Simulator
         private void Clock_Tick(object sender, object e)
         {
             if (this.twoCycles)
+            {
                 this.twoCycles = false;
-            else
-                this.Step();
+                return;
+            }
+            if (this.ProgramMemory[this.memController.PC].IsBreakpoint)
+            {
+                this.Clock.Stop();
+                this.ViewInterface.SetIsProgrammRunning(false);
+                return;
+            }
+
+            this.Step();
         }
 
         public void Step()
         {
+            this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
             this.Decode();
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
         }
@@ -72,6 +81,7 @@ namespace PIC_Simulator
             this.memController.ClearMemory();
             this.memController.PC = 0;
             this.Wreg = 0;
+            ViewInterface.ResetStopwatch();
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
         }
 
@@ -805,6 +815,9 @@ namespace PIC_Simulator
     interface ISourcecodeViewInterface
     {
         void SetCurrentSourcecodeLine(int line);
+        void SetIsProgrammRunning(bool value);
+        void IncreaseStopwatch(TimeSpan value);
+        void ResetStopwatch();
     }
 
 
@@ -849,6 +862,11 @@ namespace PIC_Simulator
 
         internal void SetFile(ushort address, byte value)
         {
+            // Nicht-implementierte memory locations nicht beschreiben!
+            if (address == 0x07 || address == 0x87) return;
+            if (address >= 0x50 && address <= 0x7F) return;
+            if (address >= 0xD0 && address <= 0xFF) return;
+
             ushort[] addresses = DecodeAddress(address);
 
             foreach (ushort element in addresses)

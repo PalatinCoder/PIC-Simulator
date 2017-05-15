@@ -1,12 +1,10 @@
 ﻿using System;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Popups;
-using System.Collections.ObjectModel;
-using Windows.Storage.Pickers;
-using Windows.Storage;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace PIC_Simulator
 {
@@ -54,6 +52,7 @@ namespace PIC_Simulator
                 await ListingFileParser.Parse(file, SourcecodeLineParsed);
                 this.processor.Reset();
                 this.statusbar.Text = file.DisplayName + " geladen";
+                this.ViewModel.IsSimInitialized = true;
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -93,6 +92,11 @@ namespace PIC_Simulator
             this.SourcecodeListingView.ScrollIntoView(this.SourcecodeListingView.SelectedItem, ScrollIntoViewAlignment.Leading);
         }
 
+        public void SetIsProgrammRunning(bool value)
+        {
+            this.ViewModel.IsProgramRunning = value;
+        }
+
         private void StepButton_Click(object sender, RoutedEventArgs e)
         {
             this.processor.Step();
@@ -108,6 +112,28 @@ namespace PIC_Simulator
         {
             this.processor.Clock.Stop();
             this.ViewModel.IsProgramRunning = false;
+        }
+
+        private void BreakpointToggle_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleButton button = (ToggleButton)sender;
+            ProcessorInstruction instruction = (ProcessorInstruction)button.DataContext;
+            instruction.IsBreakpoint = (bool)button.IsChecked;
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.processor.Reset();
+        }
+
+        public void IncreaseStopwatch(TimeSpan value)
+        {
+            this.ViewModel.Stopwatch = this.ViewModel.Stopwatch.Add(value);
+        }
+
+        public void ResetStopwatch()
+        {
+            this.ViewModel.Stopwatch = new TimeSpan();
         }
     }
 }
