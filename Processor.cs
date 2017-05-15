@@ -893,7 +893,7 @@ namespace PIC_Simulator
                 if (this.GetBit(0x81, 5) == 0)
                 {
                     this.EnableWaitCyclesCallback();
-                    this.Memory[0x01] = value;
+                    this.SetTimer(value);
                 }
             }
 
