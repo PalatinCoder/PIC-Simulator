@@ -41,7 +41,7 @@ namespace PIC_Simulator
             this.ViewInterface = viewInterface;
             Clock.Tick += Clock_Tick;
             this.Clock.Interval = new TimeSpan(20); // 20 Ticks ^= 2000 ns ^= 2MHz Quarzfrequenz
-            this.memController = new MemoryController();
+            this.memController = new MemoryController(this.EnableWaitCycles);
             this.twoCycles = false;
             tmpPORTA = tmpPORTB = tmpINTCON = 0;
         }
@@ -146,6 +146,10 @@ namespace PIC_Simulator
             }
         }
 
+        private void EnableWaitCycles()
+        {
+            this.timer_waitcycles = 2;
+        }
         /// <summary>
         /// Diese Routine dekodiert den aktuellen Befehl und ruft die entsprechende
         /// Subroutine zur Ausführung des Maschinenbefehls auf.
@@ -824,6 +828,7 @@ namespace PIC_Simulator
     internal class MemoryController : INotifyPropertyChanged
     {
 
+        Action EnableWaitCyclesCallback;
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -849,9 +854,10 @@ namespace PIC_Simulator
             }
         }
 
-        internal MemoryController()
+        internal MemoryController(Action EnableWaitCyclesCallback)
         {
             this.InitializeMemory();
+            this.EnableWaitCyclesCallback = EnableWaitCyclesCallback;
         }
 
         internal byte GetFile(ushort address)
