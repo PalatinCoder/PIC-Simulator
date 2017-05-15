@@ -13,7 +13,7 @@ namespace PIC_Simulator
         private byte wreg;
         internal byte Wreg { get { return wreg; } set { wreg = value; this.OnPropertyChanged(); } }
         private bool twoCycles;
-        private short timer_waitcycles;
+        private ushort timer_waitcycles;
         internal ObservableStack<ushort> Stack = new ObservableStack<ushort>();
         internal static ushort PORTB = 0x06;
         internal static ushort INTCON = 0x0B;
