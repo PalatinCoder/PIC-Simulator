@@ -951,7 +951,7 @@ namespace PIC_Simulator
             if ((bAddress >= 0x0A && bAddress <= 0x7F) || (bAddress >= 0x02 && bAddress <= 0x04)) return new ushort[] { bAddress, (ushort)(address | 0x80) };
 
             // Der ganze Rest
-            return new ushort[] { (ushort)(address & rp0) };
+            return new ushort[] { (ushort)(address | (rp0 << 7)) };
         }
 
         internal void ClearMemory()
