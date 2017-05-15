@@ -795,6 +795,11 @@ namespace PIC_Simulator
 
         internal void SetFile(ushort address, byte value)
         {
+            // Nicht-implementierte memory locations nicht beschreiben!
+            if (address == 0x07 || address == 0x87) return;
+            if (address >= 0x50 && address <= 0x7F) return;
+            if (address >= 0xD0 && address <= 0xFF) return;
+
             ushort[] addresses = DecodeAddress(address);
 
             foreach (ushort element in addresses)
