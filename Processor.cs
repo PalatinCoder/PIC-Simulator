@@ -868,10 +868,27 @@ namespace PIC_Simulator
         internal void SetFile(ushort address, byte value)
         {
             // Nicht-implementierte memory locations nicht beschreiben!
+            if (address == 0x00 || address == 0x80) return;
             if (address == 0x07 || address == 0x87) return;
             if (address >= 0x50 && address <= 0x7F) return;
             if (address >= 0xD0 && address <= 0xFF) return;
 
+            if (address == 0x01)
+            {
+                // Wenn Timer direkt bearbeitet wird
+                if (this.GetBit(0x81, 5) == 0)
+                {
+                    this.EnableWaitCyclesCallback();
+                    this.Memory[0x01] = value;
+                }
+            }
+
+            if (address == 0x02) // Set PCL
+            {
+                ushort pclath = (ushort)(this.GetFile(0x0A) & 0x1F);
+                this.pc = (ushort)(value | (pclath << 8));
+            }
+            
             ushort[] addresses = DecodeAddress(address);
 
             foreach (ushort element in addresses)
@@ -881,11 +898,6 @@ namespace PIC_Simulator
 
             // Statusregister in GUI updaten
             if (address == 0x03) this.OnPropertyChanged("StatusRegister");
-            if (address == 0x02) // Set PCL
-            {
-                ushort pclath = (ushort)(this.GetFile(0x0A) & 0x1F);
-                this.pc = (ushort)(value | (pclath << 8));
-            }
         }
 
         internal void SetTimer(byte value)
