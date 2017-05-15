@@ -117,8 +117,7 @@ namespace PIC_Simulator
         {
             byte timer = this.memController.GetFile(0x01);
             timer++;
-            this.memController.SetFile(0x01, timer);
-            timer_waitcycles = 0;
+            this.memController.SetTimer(timer);
 
             if (timer == 0)
             {
@@ -887,6 +886,11 @@ namespace PIC_Simulator
                 ushort pclath = (ushort)(this.GetFile(0x0A) & 0x1F);
                 this.pc = (ushort)(value | (pclath << 8));
             }
+        }
+
+        internal void SetTimer(byte value)
+        {
+            this.Memory[0x01] = value;
         }
 
         internal void SetZeroFlag()
