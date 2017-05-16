@@ -114,13 +114,6 @@ namespace PIC_Simulator
             this.ViewModel.IsProgramRunning = false;
         }
 
-        private void BreakpointToggle_Click(object sender, RoutedEventArgs e)
-        {
-            ToggleButton button = (ToggleButton)sender;
-            ProcessorInstruction instruction = (ProcessorInstruction)button.DataContext;
-            instruction.IsBreakpoint = (bool)button.IsChecked;
-        }
-
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
             this.processor.Reset();
