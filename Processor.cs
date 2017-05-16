@@ -890,7 +890,7 @@ namespace PIC_Simulator
                 Collection<byte> BitVector = new Collection<byte>();
                 for (int i = 0; i < 8; i++)
                 {
-                    if ((portA & (1 << i)) > 0)
+                    if ((portB & (1 << i)) > 0)
                         BitVector.Add(1);
                     else
                         BitVector.Add(0);

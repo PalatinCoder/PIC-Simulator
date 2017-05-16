@@ -135,5 +135,33 @@ namespace PIC_Simulator
         {
             this.ViewModel.Stopwatch = new TimeSpan();
         }
+
+        // TODO [wontfix] refactoring needed ;-)
+        private void IORegisterA_FlipBit(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {
+            byte i = (byte)(sender as GridView).SelectedIndex;
+            if (this.processor.memController.GetBit(0x05, i) == 0)
+            {
+                this.processor.memController.SetBit(0x05, i);
+            } else
+            {
+                this.processor.memController.ClearBit(0x05, i);
+            }
+            (sender as GridView).ItemsSource = this.processor.memController.PortA;
+        }
+
+        private void IORegisterB_FlipBit(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {
+            byte i = (byte)(sender as GridView).SelectedIndex;
+            if (this.processor.memController.GetBit(0x06, i) == 0)
+            {
+                this.processor.memController.SetBit(0x06, i);
+            }
+            else
+            {
+                this.processor.memController.ClearBit(0x06, i);
+            }
+            (sender as GridView).ItemsSource = this.processor.memController.PortB;
+        }
     }
 }
