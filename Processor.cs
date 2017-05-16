@@ -16,6 +16,7 @@ namespace PIC_Simulator
         private ushort timerPrescalerCounter = 0;
         private short timer_waitcycles = 0;
         internal ObservableStack<ushort> Stack = new ObservableStack<ushort>();
+        internal static ushort PORTA = 0x05;
         internal static ushort PORTB = 0x06;
         internal static ushort INTCON = 0x0B;
         internal static ushort OPTION_REG = 0x81;
@@ -77,6 +78,7 @@ namespace PIC_Simulator
                 this.twoCycles = false;
             }
             tmpINTCON = this.memController.GetFile(INTCON);
+            tmpPORTA = this.memController.GetFile(PORTA);
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
         }
 
