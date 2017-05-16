@@ -866,6 +866,38 @@ namespace PIC_Simulator
                 this.OnPropertyChanged("PC");
             }
         }
+        internal Collection<byte> PortA
+        {
+            get
+            {
+                Utility.BindableByte portA = this.Memory[0x05];
+                Collection<byte> BitVector = new Collection<byte>();
+                for (int i=0; i<5; i++)
+                {
+                    if ((portA & (1 << i)) > 0)
+                        BitVector.Add(1);
+                    else
+                        BitVector.Add(0);
+                }
+                return BitVector;
+            }
+        }
+        internal Collection<byte> PortB
+        {
+            get
+            {
+                Utility.BindableByte portB = this.Memory[0x06];
+                Collection<byte> BitVector = new Collection<byte>();
+                for (int i = 0; i < 8; i++)
+                {
+                    if ((portA & (1 << i)) > 0)
+                        BitVector.Add(1);
+                    else
+                        BitVector.Add(0);
+                }
+                return BitVector;
+            }
+        }
 
         internal MemoryController(Action EnableWaitCyclesCallback)
         {
