@@ -95,13 +95,13 @@ namespace PIC_Simulator
 
         private void Tmr0Tick()
         {
+            // Timer Modus wenn T0CS clear
+            // Prescaler holen
+            ushort PrescalerRateSelect = (ushort)(this.memController.GetFile(0x81) & 0x07);
+            ushort PrescalerRatio = (ushort)(1 << (PrescalerRateSelect + 1)); // = 2 ^ (PrescalerRateSelect + 1)
+            ushort psa = (ushort)(this.memController.GetBit(0x81, 3));
             if (this.memController.GetBit(OPTION_REG, 5) == 0)
             {
-                // Timer Modus wenn T0CS clear
-                // Prescaler holen
-                ushort PrescalerRateSelect = (ushort)(this.memController.GetFile(0x81) & 0x07);
-                ushort PrescalerRatio = (ushort)(1 << (PrescalerRateSelect + 1)); // = 2 ^ (PrescalerRateSelect + 1)
-                ushort psa = (ushort)(this.memController.GetBit(0x81, 3));
 
                 if (timer_waitcycles <= 0 && ((psa == 0 && this.timerPrescalerCounter >= PrescalerRatio) || !(psa == 0))) {
                     if (psa == 0) this.timerPrescalerCounter = 0;
@@ -119,16 +119,26 @@ namespace PIC_Simulator
                 {
                     // Counter schaltet bei rising edge
                     if (((tmpPORTA & 0x10) == 0) && (this.memController.GetBit(PORTA, 4) == 1)) {
-                        IncTimer();
+                        if (this.timerPrescalerCounter >= PrescalerRatio)
+                        {
+                            IncTimer();
+                            this.timerPrescalerCounter = 0;
+                        }
                         tmpPORTA = this.memController.GetFile(PORTA);
+                        this.timerPrescalerCounter++;
                     }
                 }
                 else
                 {
                     // Counter schaltet bei falling edge
                     if (((tmpPORTA & 0x10) > 0) && (this.memController.GetBit(PORTA, 4) == 0)) {
-                        IncTimer();
+                        if (this.timerPrescalerCounter >= PrescalerRatio)
+                        {
+                            IncTimer();
+                            this.timerPrescalerCounter = 0;
+                        }
                         tmpPORTA = this.memController.GetFile(PORTA);
+                        this.timerPrescalerCounter++;
                     }
                 }
             }
