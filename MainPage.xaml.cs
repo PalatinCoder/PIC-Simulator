@@ -163,5 +163,32 @@ namespace PIC_Simulator
             }
             (sender as GridView).ItemsSource = this.processor.memController.PortB;
         }
+        private void IOTrisA_FlipBit(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {
+            byte i = (byte)(sender as GridView).SelectedIndex;
+            if (this.processor.memController.GetBit(0x85, i) == 0)
+            {
+                this.processor.memController.SetBit(0x85, i);
+            }
+            else
+            {
+                this.processor.memController.ClearBit(0x85, i);
+            }
+            (sender as GridView).ItemsSource = this.processor.memController.TrisA;
+        }
+
+        private void IOTrisB_FlipBit(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {
+            byte i = (byte)(sender as GridView).SelectedIndex;
+            if (this.processor.memController.GetBit(0x86, i) == 0)
+            {
+                this.processor.memController.SetBit(0x86, i);
+            }
+            else
+            {
+                this.processor.memController.ClearBit(0x86, i);
+            }
+            (sender as GridView).ItemsSource = this.processor.memController.TrisB;
+        }
     }
 }

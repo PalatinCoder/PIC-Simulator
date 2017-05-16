@@ -898,6 +898,38 @@ namespace PIC_Simulator
                 return BitVector;
             }
         }
+        internal Collection<byte> TrisA
+        {
+            get
+            {
+                Utility.BindableByte trisA = this.Memory[0x85];
+                Collection<byte> BitVector = new Collection<byte>();
+                for (int i = 0; i < 5; i++)
+                {
+                    if ((trisA & (1 << i)) > 0)
+                        BitVector.Add(1);
+                    else
+                        BitVector.Add(0);
+                }
+                return BitVector;
+            }
+        }
+        internal Collection<byte> TrisB
+        {
+            get
+            {
+                Utility.BindableByte trisB = this.Memory[0x86];
+                Collection<byte> BitVector = new Collection<byte>();
+                for (int i = 0; i < 8; i++)
+                {
+                    if ((trisB & (1 << i)) > 0)
+                        BitVector.Add(1);
+                    else
+                        BitVector.Add(0);
+                }
+                return BitVector;
+            }
+        }
 
         internal MemoryController(Action EnableWaitCyclesCallback)
         {
