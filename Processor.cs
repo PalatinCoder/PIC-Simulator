@@ -118,14 +118,18 @@ namespace PIC_Simulator
                 if (this.memController.GetBit(OPTION_REG, 4) == 0)
                 {
                     // Counter schaltet bei rising edge
-                    if ((this.memController.GetBit(INTCON, 4) == 1) && ((tmpINTCON & 0x10) == 0))
+                    if (((tmpPORTA & 0x10) == 0) && (this.memController.GetBit(PORTA, 4) == 1)) {
                         IncTimer();
+                        tmpPORTA = this.memController.GetFile(PORTA);
+                    }
                 }
                 else
                 {
                     // Counter schaltet bei falling edge
-                    if ((this.memController.GetBit(INTCON, 4) == 0) && ((tmpINTCON & 0x10) == 1))
+                    if (((tmpPORTA & 0x10) > 0) && (this.memController.GetBit(PORTA, 4) == 0)) {
                         IncTimer();
+                        tmpPORTA = this.memController.GetFile(PORTA);
+                    }
                 }
             }
         }
