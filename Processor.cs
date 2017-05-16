@@ -76,6 +76,7 @@ namespace PIC_Simulator
                 Tmr0Tick();
                 this.twoCycles = false;
             }
+            tmpINTCON = this.memController.GetFile(INTCON);
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
         }
 
