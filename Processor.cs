@@ -68,6 +68,7 @@ namespace PIC_Simulator
 
         public void Step()
         {
+            Interrupt();
             this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
             Tmr0Tick();
             this.Decode();
@@ -157,23 +158,34 @@ namespace PIC_Simulator
             }
         }
 
-        private void CheckForInterrupts()
+        private void Interrupt()
+        {
+            if (CheckForInterrupts()) {
+                // Aktuellen PC auf Stack pushen
+                this.Stack.Push(this.memController.PC);
+                // GIE löschen
+                this.memController.ClearBit(INTCON, 7);
+                // Bei Interrupt wird an Stelle 0x04 gesprungen
+                this.memController.PC = 0x04;
+            }
+        }
+
+        private bool CheckForInterrupts()
         {
             // Testen ob GIE Bit gesetzt ist (ansonsten nicht auf Interrupts prüfen)
             if (this.memController.GetBit(INTCON, 7) == 1)
             {
-                // Bei Interrupt wird an Stelle 0x04 gesprungen
-                // GIE löschen
-                // Code ausfähren
-                // GIE wieder setzen
-
-                // INT (RB0) Interrupt
-
-
-
-                // PORTB Interrupt:
-                //if (this.memController.GetBit(PORTB, 3))...
+                // RB Port Change
+                if (this.memController.GetBit(INTCON, 3) == 1 && this.memController.GetBit(INTCON, 0) == 1) return true;
+                // RB0 / INT
+                if (this.memController.GetBit(INTCON, 4) == 1 && this.memController.GetBit(INTCON, 1) == 1) return true;
+                // TMR0 overflow
+                if (this.memController.GetBit(INTCON, 5) == 1 && this.memController.GetBit(INTCON, 2) == 1) return true;
+                // EE Write Complete
+                if (this.memController.GetBit(INTCON, 6) == 1 && this.memController.GetBit(0x88, 4) == 1) return true;
             }
+
+            return false;
         }
 
         private void EnableWaitCycles()
