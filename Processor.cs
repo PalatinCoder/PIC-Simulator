@@ -125,7 +125,6 @@ namespace PIC_Simulator
             this.memController.ClearMemory();
             this.memController.PC = 0;
             this.Wreg = 0;
-            this.memController.SetFile(0x81, 0xFF);
             ViewInterface.ResetStopwatch();
             this.Watchdog = 0;
             this._isSleeping = false;
@@ -1144,11 +1143,30 @@ namespace PIC_Simulator
             return new ushort[] { (ushort)(address | (rp0 << 7)) };
         }
 
+        internal byte GetResetValue(byte address)
+        {
+            switch (address)
+            {
+                case 0x03:
+                    return 0x18;
+                case 0x81:
+                    return 0xFF;
+                case 0x83:
+                    return 0x18;
+                case 0x85:
+                    return 0x1F;
+                case 0x86:
+                    return 0xFF;
+                default:
+                    return 0;
+            }
+        }
+
         internal void ClearMemory()
         {
             for (int i = 0; i <= 0xFF; i++)
             {
-                this.Memory[i] = 0;
+                this.Memory[i] = GetResetValue((byte)i);
             }
             this.OnPropertyChanged("StatusRegister");
         }
@@ -1157,7 +1175,7 @@ namespace PIC_Simulator
         {
             for (int i = 0; i <= 0xFF; i++)
             {
-                this.Memory.Add(0);
+                this.Memory.Add(GetResetValue((byte)i));
             }
         }
     }
