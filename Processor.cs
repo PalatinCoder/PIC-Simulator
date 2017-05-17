@@ -20,7 +20,7 @@ namespace PIC_Simulator
         internal static ushort PORTB = 0x06;
         internal static ushort INTCON = 0x0B;
         internal static ushort OPTION_REG = 0x81;
-        private byte tmpPORTA, tmpPORTB, tmpINTCON;
+        private byte tmpPORTA, tmpINTCON;
         // Watchdog timer Zählvariable, zählt die vergangenen Ticks
         internal long Watchdog = 0;
         /// <summary>
@@ -48,7 +48,7 @@ namespace PIC_Simulator
             this.Clock.Interval = new TimeSpan(20); // 20 Ticks ^= 2000 ns ^= 2MHz Quarzfrequenz
             this.memController = new MemoryController(this.EnableWaitCycles);
             this.twoCycles = false;
-            tmpPORTA = tmpPORTB = tmpINTCON = 0;
+            tmpPORTA = tmpINTCON = 0;
         }
 
         private ushort GetOpcode()
