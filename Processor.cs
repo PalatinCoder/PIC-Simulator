@@ -68,7 +68,7 @@ namespace PIC_Simulator
 
         public void Step()
         {
-            Interrupt();
+            if (Interrupt()) return;
             this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
             Tmr0Tick();
             this.Decode();
@@ -158,7 +158,7 @@ namespace PIC_Simulator
             }
         }
 
-        private void Interrupt()
+        private bool Interrupt()
         {
             if (CheckForInterrupts()) {
                 // Aktuellen PC auf Stack pushen
@@ -167,7 +167,10 @@ namespace PIC_Simulator
                 this.memController.ClearBit(INTCON, 7);
                 // Bei Interrupt wird an Stelle 0x04 gesprungen
                 this.memController.PC = 0x04;
+                ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
+                return true;
             }
+            return false;
         }
 
         private bool CheckForInterrupts()
