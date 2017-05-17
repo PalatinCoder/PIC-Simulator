@@ -836,11 +836,18 @@ namespace PIC_Simulator
 
         private void sleep()
         {
-            // TODO 0x00 -> WDT
-            // TODO 0 -> WDT prescaler
-            // TODO PIC in Sleep Modus versetzen!
+            // 0x00 -> WDT
+            this.Watchdog = 0;
+            // 0 -> WDT prescaler
+            this.memController.ClearBit(0x81, 0);
+            this.memController.ClearBit(0x81, 1);
+            this.memController.ClearBit(0x81, 2);
+            // Set TO (Time out bit)
             this.memController.SetBit(0x03, 4);
+            // Clear PD (Power Down bit)
             this.memController.ClearBit(0x03, 3);
+
+            this._isSleeping = true;
         }
 
         private void sublw()
