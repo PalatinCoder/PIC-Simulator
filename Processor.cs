@@ -773,8 +773,12 @@ namespace PIC_Simulator
             this.memController.SetBit(0x03, 4);
             this.memController.SetBit(0x03, 3);
 
-            //TODO WDT auf 0x00 setzen
-            //TODO WDT prescaler auf 0 setzen
+            //WDT auf 0x00 setzen
+            this.Watchdog = 0;
+            //WDT prescaler auf 0 setzen
+            this.memController.ClearBit(0x81, 0);
+            this.memController.ClearBit(0x81, 1);
+            this.memController.ClearBit(0x81, 2);
 
             this.memController.PC++;
         }
