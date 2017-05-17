@@ -21,7 +21,8 @@ namespace PIC_Simulator
         internal static ushort INTCON = 0x0B;
         internal static ushort OPTION_REG = 0x81;
         private byte tmpPORTA, tmpPORTB, tmpINTCON;
-
+        // Watchdog timer Zählvariable, zählt die vergangenen Ticks
+        internal long Watchdog = 0;
         /// <summary>
         /// Der interne Takt für (!)µC-Zyklen
         /// Beachten: f_PIC = f_Quarz / 4, also 4 Quarz Schwingungen
@@ -30,6 +31,8 @@ namespace PIC_Simulator
         public DispatcherTimer Clock = new DispatcherTimer();
 
         private ISourcecodeViewInterface ViewInterface;
+        private bool _isSleeping;
+
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -69,17 +72,49 @@ namespace PIC_Simulator
         public void Step()
         {
             this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
+            WatchdogTick();
+            if (this._isSleeping) return;
+
             Tmr0Tick();
             this.Decode();
             if (this.twoCycles)
             {
                 this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
+                WatchdogTick();
                 Tmr0Tick();
                 this.twoCycles = false;
             }
             tmpINTCON = this.memController.GetFile(INTCON);
             tmpPORTA = this.memController.GetFile(PORTA);
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
+        }
+
+        private void WatchdogTick()
+        {
+            this.Watchdog += this.Clock.Interval.Ticks;
+
+            ushort PostscalerRateSelect = (ushort)(this.memController.GetFile(0x81) & 0x07);
+            int PostscalerRatio = 1;
+            ushort psa = (this.memController.GetBit(0x81, 3));
+
+            if (psa == 1) PostscalerRatio = (ushort)(1 << (PostscalerRateSelect)); // = 2 ^ PrescalerRateSelect
+
+            long BaseTicks = 180000; // 18ms
+#if DEBUG
+            BaseTicks = 1800; // damit's beim debuggen schneller geht ;)
+#endif
+            if (this.Watchdog >= (BaseTicks * PostscalerRatio))
+                if (this._isSleeping)
+                {
+                    this._isSleeping = false;
+                    this.Watchdog = 0;
+                    this.memController.PC++;
+                }
+                else
+                {
+                    this.Reset();
+                    this.memController.ClearBit(0x03, 4); // PD bit
+                }
         }
 
         internal void Reset()
@@ -90,6 +125,8 @@ namespace PIC_Simulator
             this.Wreg = 0;
             this.memController.SetFile(0x81, 0xFF);
             ViewInterface.ResetStopwatch();
+            this.Watchdog = 0;
+            this._isSleeping = false;
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
         }
 
