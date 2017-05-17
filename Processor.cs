@@ -1003,6 +1003,24 @@ namespace PIC_Simulator
 
             foreach (ushort element in addresses)
             {
+                if (address == 0x06)
+                {
+                    byte tmpPORTB = GetFile(0x06);
+                    byte INTEDG = GetBit(0x81, 6);
+
+                    // Wenn Rising edge Bit gesetzt & Veränderung an RB0 von 0 -> 1
+                    bool risingEdge = (INTEDG == 1 && (tmpPORTB & 0x01) == 0 && (value & 0x01) == 1);
+                    // Wenn falling edge Bit gesetzt & Veränderung an RB0 von 1 -> 0
+                    bool fallingEdge = (INTEDG == 0 && (tmpPORTB & 0x01) == 1 && (value & 0x01) == 0);
+                    
+                    // Wenn an RB0 Flanke erkannt wird
+                    if (risingEdge || fallingEdge)
+                    {
+                        // RB0 Interrupt Bit setzen
+                        SetBit(0x0B, 1);
+                    }
+                }
+
                 this.Memory[element] = value;
             }
 
