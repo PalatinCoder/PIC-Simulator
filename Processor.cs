@@ -71,6 +71,7 @@ namespace PIC_Simulator
 
         public void Step()
         {
+            if (Interrupt()) return;
             this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
             WatchdogTick();
             if (this._isSleeping) return;
@@ -84,6 +85,7 @@ namespace PIC_Simulator
                 Tmr0Tick();
                 this.twoCycles = false;
             }
+
             tmpINTCON = this.memController.GetFile(INTCON);
             tmpPORTA = this.memController.GetFile(PORTA);
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
@@ -139,8 +141,8 @@ namespace PIC_Simulator
             ushort psa = (ushort)(this.memController.GetBit(0x81, 3));
             if (this.memController.GetBit(OPTION_REG, 5) == 0)
             {
-
-                if (timer_waitcycles <= 0 && ((psa == 0 && this.timerPrescalerCounter >= PrescalerRatio) || !(psa == 0))) {
+                if (timer_waitcycles <= 0 && ((psa == 0 && this.timerPrescalerCounter >= PrescalerRatio) || !(psa == 0)))
+                {
                     if (psa == 0) this.timerPrescalerCounter = 0;
                     IncTimer();
                 }
@@ -155,7 +157,8 @@ namespace PIC_Simulator
                 if (this.memController.GetBit(OPTION_REG, 4) == 0)
                 {
                     // Counter schaltet bei rising edge
-                    if (((tmpPORTA & 0x10) == 0) && (this.memController.GetBit(PORTA, 4) == 1)) {
+                    if (((tmpPORTA & 0x10) == 0) && (this.memController.GetBit(PORTA, 4) == 1))
+                    {
                         if (this.timerPrescalerCounter >= PrescalerRatio)
                         {
                             IncTimer();
@@ -168,7 +171,8 @@ namespace PIC_Simulator
                 else
                 {
                     // Counter schaltet bei falling edge
-                    if (((tmpPORTA & 0x10) > 0) && (this.memController.GetBit(PORTA, 4) == 0)) {
+                    if (((tmpPORTA & 0x10) > 0) && (this.memController.GetBit(PORTA, 4) == 0))
+                    {
                         if (this.timerPrescalerCounter >= PrescalerRatio)
                         {
                             IncTimer();
@@ -194,23 +198,38 @@ namespace PIC_Simulator
             }
         }
 
-        private void CheckForInterrupts()
+        private bool Interrupt()
+        {
+            if (CheckForInterrupts())
+            {
+                // Aktuellen PC auf Stack pushen
+                this.Stack.Push(this.memController.PC);
+                // GIE löschen
+                this.memController.ClearBit(INTCON, 7);
+                // Bei Interrupt wird an Stelle 0x04 gesprungen
+                this.memController.PC = 0x04;
+                ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
+                return true;
+            }
+            return false;
+        }
+
+        private bool CheckForInterrupts()
         {
             // Testen ob GIE Bit gesetzt ist (ansonsten nicht auf Interrupts prüfen)
             if (this.memController.GetBit(INTCON, 7) == 1)
             {
-                // Bei Interrupt wird an Stelle 0x04 gesprungen
-                // GIE löschen
-                // Code ausfähren
-                // GIE wieder setzen
-
-                // INT (RB0) Interrupt
-
-
-
-                // PORTB Interrupt:
-                //if (this.memController.GetBit(PORTB, 3))...
+                // RB Port Change
+                if (this.memController.GetBit(INTCON, 3) == 1 && this.memController.GetBit(INTCON, 0) == 1) return true;
+                // RB0 / INT
+                if (this.memController.GetBit(INTCON, 4) == 1 && this.memController.GetBit(INTCON, 1) == 1) return true;
+                // TMR0 overflow
+                if (this.memController.GetBit(INTCON, 5) == 1 && this.memController.GetBit(INTCON, 2) == 1) return true;
+                // EE Write Complete
+                if (this.memController.GetBit(INTCON, 6) == 1 && this.memController.GetBit(0x88, 4) == 1) return true;
             }
+
+            return false;
         }
 
         private void EnableWaitCycles()
@@ -817,7 +836,7 @@ namespace PIC_Simulator
         {
             this.twoCycles = true;
             // Set GIE bit:
-            this.memController.SetBit(0x0B, 7);
+            this.memController.SetBit(INTCON, 7);
             this.memController.PC = (this.Stack.Pop());
         }
 
@@ -937,7 +956,7 @@ namespace PIC_Simulator
             {
                 Utility.BindableByte portA = this.Memory[0x05];
                 Collection<byte> BitVector = new Collection<byte>();
-                for (int i=0; i<5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     if ((portA & (1 << i)) > 0)
                         BitVector.Add(1);
@@ -1031,11 +1050,39 @@ namespace PIC_Simulator
                 ushort pclath = (ushort)(this.GetFile(0x0A) & 0x1F);
                 this.pc = (ushort)(value | (pclath << 8));
             }
-            
+
             ushort[] addresses = DecodeAddress(address);
 
             foreach (ushort element in addresses)
             {
+                if (address == 0x06)
+                {
+                    byte TRISB = 0x86;
+                    byte tmpPORTB = GetFile(0x06);
+                    byte INTEDG = GetBit(0x81, 6);
+                    // Wenn Rising edge Bit gesetzt & Veränderung an RB0 von 0 -> 1
+                    bool risingEdge = (INTEDG == 1 && (tmpPORTB & 0x01) == 0 && (value & 0x01) == 1);
+                    // Wenn falling edge Bit gesetzt & Veränderung an RB0 von 1 -> 0
+                    bool fallingEdge = (INTEDG == 0 && (tmpPORTB & 0x01) == 1 && (value & 0x01) == 0);
+
+                    // Wenn an RB0 Flanke erkannt wird, RB0 Interrupt Bit setzen
+                    if (risingEdge || fallingEdge)
+                        SetBit(0x0B, 1);
+                    else if ((tmpPORTB & 0xF0) != (value & 0xF0))
+                    {
+                        for (int bit = 4; bit <= 7; bit++)
+                        {
+                            byte mask = (byte)(1 << bit);
+                            // Wenn Pin auf input gestellt && (vorher eine 1, dann eine 0 || vorher eine 0, dann eine 1), dann Interrupt
+                            if (GetBit(TRISB, (byte)bit) == 1 && (((tmpPORTB & mask) > 0 && (value & mask) == 0) || ((tmpPORTB & mask) == 0 && (value & mask) > 0)))
+                            {
+                                SetBit(0x0B, 0);
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 this.Memory[element] = value;
             }
 
