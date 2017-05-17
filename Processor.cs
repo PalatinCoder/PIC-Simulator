@@ -1009,6 +1009,7 @@ namespace PIC_Simulator
             {
                 if (address == 0x06)
                 {
+                    byte TRISB = 0x86;
                     byte tmpPORTB = GetFile(0x06);
                     byte INTEDG = GetBit(0x81, 6);
                     // Wenn Rising edge Bit gesetzt & Veränderung an RB0 von 0 -> 1
@@ -1016,11 +1017,21 @@ namespace PIC_Simulator
                     // Wenn falling edge Bit gesetzt & Veränderung an RB0 von 1 -> 0
                     bool fallingEdge = (INTEDG == 0 && (tmpPORTB & 0x01) == 1 && (value & 0x01) == 0);
 
-                    // Wenn an RB0 Flanke erkannt wird
+                    // Wenn an RB0 Flanke erkannt wird, RB0 Interrupt Bit setzen
                     if (risingEdge || fallingEdge)
-                    {
-                        // RB0 Interrupt Bit setzen
                         SetBit(0x0B, 1);
+                    else if ((tmpPORTB & 0xF0) != (value & 0xF0))
+                    {
+                        for (int bit = 4; bit <= 7; bit++)
+                        {
+                            byte mask = (byte)(1 << bit);
+                            // Wenn Pin auf input gestellt && (vorher eine 1, dann eine 0 || vorher eine 0, dann eine 1), dann Interrupt
+                            if (GetBit(TRISB, (byte)bit) == 1 && (((tmpPORTB & mask) > 0 && (value & mask) == 0) || ((tmpPORTB & mask) == 0 && (value & mask) > 0)))
+                            {
+                                SetBit(0x0B, 0);
+                                break;
+                            }
+                        }
                     }
                 }
 
