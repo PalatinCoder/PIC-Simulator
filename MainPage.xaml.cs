@@ -128,60 +128,36 @@ namespace PIC_Simulator
         {
             this.ViewModel.Stopwatch = new TimeSpan();
         }
-
-        // TODO [wontfix] refactoring needed ;-)
-        private void IORegisterA_FlipBit(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        
+        private void IORegister_FlipBit(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
         {
             byte i = (byte)(sender as GridView).SelectedIndex;
-            if (this.processor.memController.GetBit(0x05, i) == 0)
+            ushort address;
+            switch ((sender as GridView).Tag)
             {
-                this.processor.memController.SetBit(0x05, i);
+                case "PortA":
+                    address = 0x05;
+                    break;
+                case "PortB":
+                    address = 0x06;
+                    break;
+                case "TrisA":
+                    address = 0x85;
+                    break;
+                case "TrisB":
+                    address = 0x86;
+                    break;
+                default:
+                    address = 0xFF;
+                    break;
+            }
+            if (this.processor.memController.GetBit(address, i) == 0)
+            {
+                this.processor.memController.SetBit(address, i);
             } else
             {
-                this.processor.memController.ClearBit(0x05, i);
+                this.processor.memController.ClearBit(address, i);
             }
-            (sender as GridView).ItemsSource = this.processor.memController.PortA;
-        }
-
-        private void IORegisterB_FlipBit(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
-        {
-            byte i = (byte)(sender as GridView).SelectedIndex;
-            if (this.processor.memController.GetBit(0x06, i) == 0)
-            {
-                this.processor.memController.SetBit(0x06, i);
-            }
-            else
-            {
-                this.processor.memController.ClearBit(0x06, i);
-            }
-            (sender as GridView).ItemsSource = this.processor.memController.PortB;
-        }
-        private void IOTrisA_FlipBit(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
-        {
-            byte i = (byte)(sender as GridView).SelectedIndex;
-            if (this.processor.memController.GetBit(0x85, i) == 0)
-            {
-                this.processor.memController.SetBit(0x85, i);
-            }
-            else
-            {
-                this.processor.memController.ClearBit(0x85, i);
-            }
-            (sender as GridView).ItemsSource = this.processor.memController.TrisA;
-        }
-
-        private void IOTrisB_FlipBit(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
-        {
-            byte i = (byte)(sender as GridView).SelectedIndex;
-            if (this.processor.memController.GetBit(0x86, i) == 0)
-            {
-                this.processor.memController.SetBit(0x86, i);
-            }
-            else
-            {
-                this.processor.memController.ClearBit(0x86, i);
-            }
-            (sender as GridView).ItemsSource = this.processor.memController.TrisB;
         }
     }
 }

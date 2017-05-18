@@ -70,7 +70,7 @@
                 <StackPanel Orientation="Horizontal">
                     <StackPanel Margin="0,0,50,0">
                         <TextBlock Text="Port A" />
-                        <GridView ItemsSource="{x:Bind processor.memController.PortA}" IsItemClickEnabled="True" IsDoubleTapEnabled="True" DoubleTapped="IORegisterA_FlipBit">
+                        <GridView ItemsSource="{x:Bind processor.memController.PortA, Mode=OneWay}" IsItemClickEnabled="True" IsDoubleTapEnabled="True" DoubleTapped="IORegister_FlipBit" Tag="PortA">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}" />
@@ -83,7 +83,7 @@
                             </GridView.ItemsPanel>
                         </GridView>
                         <TextBlock Text="Tris A" />
-                        <GridView ItemsSource="{x:Bind processor.memController.TrisA}" IsItemClickEnabled="True" IsDoubleTapEnabled="True" DoubleTapped="IOTrisA_FlipBit">
+                        <GridView ItemsSource="{x:Bind processor.memController.TrisA, Mode=OneWay}" IsItemClickEnabled="True" IsDoubleTapEnabled="True" DoubleTapped="IORegister_FlipBit" Tag="TrisA">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}" />
@@ -98,7 +98,7 @@
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Text="Port B" />
-                        <GridView ItemsSource="{x:Bind processor.memController.PortB}" IsItemClickEnabled="True" IsDoubleTapEnabled="True" DoubleTapped="IORegisterB_FlipBit">
+                        <GridView ItemsSource="{x:Bind processor.memController.PortB, Mode=OneWay}" IsItemClickEnabled="True" IsDoubleTapEnabled="True" DoubleTapped="IORegister_FlipBit" Tag="PortB">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}" />
@@ -111,7 +111,7 @@
                             </GridView.ItemsPanel>
                         </GridView>
                         <TextBlock Text="Tris B" />
-                        <GridView ItemsSource="{x:Bind processor.memController.TrisB}" IsItemClickEnabled="True" IsDoubleTapEnabled="True" DoubleTapped="IOTrisB_FlipBit">
+                        <GridView ItemsSource="{x:Bind processor.memController.TrisB, Mode=OneWay}" IsItemClickEnabled="True" IsDoubleTapEnabled="True" DoubleTapped="IORegister_FlipBit" Tag="TrisB">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}" />

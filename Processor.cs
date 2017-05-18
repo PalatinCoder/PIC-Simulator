@@ -1083,10 +1083,14 @@ namespace PIC_Simulator
                 }
 
                 this.Memory[element] = value;
-            }
 
-            // Statusregister in GUI updaten
-            if (address == 0x03) this.OnPropertyChanged("StatusRegister");
+                // Statusregister in GUI updaten
+                if (element == 0x03) this.OnPropertyChanged("StatusRegister");
+                if (element == 0x05) this.OnPropertyChanged("PortA");
+                if (element == 0x06) this.OnPropertyChanged("PortB");
+                if (element == 0x85) this.OnPropertyChanged("TrisA");
+                if (element == 0x86) this.OnPropertyChanged("TrisB");
+            }
         }
 
         internal void SetTimer(byte value)
