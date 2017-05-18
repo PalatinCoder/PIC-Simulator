@@ -1079,7 +1079,7 @@ namespace PIC_Simulator
         /// <summary>
         /// Methode um Wert an Speicheradresse zu schreiben
         /// </summary>
-        /// <param name="address">Adresse</param>
+        /// <param name="address">Speichersterre</param>
         /// <param name="value">Wert</param>
         internal void SetFile(ushort address, byte value)
         {
