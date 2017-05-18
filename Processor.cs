@@ -8,18 +8,25 @@ namespace PIC_Simulator
 {
     class Processor : INotifyPropertyChanged
     {
+        private ISourcecodeViewInterface ViewInterface;
+
         internal Collection<ProcessorInstruction> ProgramMemory = new Collection<ProcessorInstruction>();
         internal MemoryController memController;
+        internal ObservableStack<ushort> Stack = new ObservableStack<ushort>();
+
         private byte wreg;
         internal byte Wreg { get { return wreg; } set { wreg = value; this.OnPropertyChanged(); } }
         private bool twoCycles;
+        private bool _isSleeping;
         private ushort timerPrescalerCounter = 0;
         private short timer_waitcycles = 0;
-        internal ObservableStack<ushort> Stack = new ObservableStack<ushort>();
+
+        // Häufig genutzte GPR Adressen
         internal static ushort PORTA = 0x05;
         internal static ushort PORTB = 0x06;
         internal static ushort INTCON = 0x0B;
         internal static ushort OPTION_REG = 0x81;
+        // Temporäre Werte der PORTA bzw. INTCON Register
         private byte tmpPORTA, tmpINTCON;
         // Watchdog timer Zählvariable, zählt die vergangenen Ticks
         internal long Watchdog = 0;
@@ -29,9 +36,6 @@ namespace PIC_Simulator
         /// ergeben einen µC-Takt
         /// </summary>
         public DispatcherTimer Clock = new DispatcherTimer();
-
-        private ISourcecodeViewInterface ViewInterface;
-        private bool _isSleeping;
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -133,13 +137,13 @@ namespace PIC_Simulator
 
         private void Tmr0Tick()
         {
-            // Timer Modus wenn T0CS clear
             // Prescaler holen
             ushort PrescalerRateSelect = (ushort)(this.memController.GetFile(0x81) & 0x07);
             ushort PrescalerRatio = (ushort)(1 << (PrescalerRateSelect + 1)); // = 2 ^ (PrescalerRateSelect + 1)
             ushort psa = (ushort)(this.memController.GetBit(0x81, 3));
             if (this.memController.GetBit(OPTION_REG, 5) == 0)
             {
+                // Timer Modus wenn T0CS clear
                 if (timer_waitcycles <= 0 && ((psa == 0 && this.timerPrescalerCounter >= PrescalerRatio) || !(psa == 0)))
                 {
                     if (psa == 0) this.timerPrescalerCounter = 0;
@@ -943,6 +947,7 @@ namespace PIC_Simulator
             set
             {
                 byte lowerBits = (byte)(value & 0x00FF);
+                // PCL setzen
                 this.SetFile(0x02, lowerBits);
                 this.pc = value;
                 // GUI update callback
@@ -1028,7 +1033,7 @@ namespace PIC_Simulator
 
         internal void SetFile(ushort address, byte value)
         {
-            // Nicht-implementierte memory locations nicht beschreiben!
+            // Nicht-implementierte memory locations dürfen nicht beschrieben werden!
             if (address == 0x00 || address == 0x80) return;
             if (address == 0x07 || address == 0x87) return;
             if (address >= 0x50 && address <= 0x7F) return;
@@ -1036,7 +1041,7 @@ namespace PIC_Simulator
 
             if (address == 0x01)
             {
-                // Wenn Timer direkt bearbeitet wird
+                // Wenn Timer direkt (vom ausgeführten Code) bearbeitet wird
                 if (this.GetBit(0x81, 5) == 0)
                 {
                     this.EnableWaitCyclesCallback();
@@ -1084,7 +1089,7 @@ namespace PIC_Simulator
 
                 this.Memory[element] = value;
 
-                // Statusregister in GUI updaten
+                // Verschiedene Register in GUI updaten
                 if (element == 0x03) this.OnPropertyChanged("StatusRegister");
                 if (element == 0x05) this.OnPropertyChanged("PortA");
                 if (element == 0x06) this.OnPropertyChanged("PortB");
@@ -1093,6 +1098,8 @@ namespace PIC_Simulator
             }
         }
 
+        // Methode um den Timer zu setzen. Soll nur vom Prozessor aufgerufen werden.
+        // Hierbei gibt es keine Waitcycles!
         internal void SetTimer(byte value)
         {
             this.Memory[0x01] = value;
@@ -1118,14 +1125,14 @@ namespace PIC_Simulator
         internal void SetBit(ushort address, byte bit)
         {
             byte value = this.GetFile(address);
-            value |= (byte)(1 << bit); // Wert mit einer geshifteten 1 verodern, um ein Bit zu setzen
+            value |= (byte)(1 << bit); // Wert mit einer um 'bit' geshifteten 1 verodern, um ein Bit zu setzen
             this.SetFile(address, value);
         }
 
         internal void ClearBit(ushort address, byte bit)
         {
             byte value = this.GetFile(address);
-            value &= (byte)~(1 << bit); // Wert '1' shiften und danach umkehren - Das dann mit value verunden, um ein Bit zu clearen
+            value &= (byte)~(1 << bit); // Wert '1' um 'bit' shiften und danach umkehren - Das dann mit value verunden, um ein Bit zu clearen
             this.SetFile(address, value);
         }
 
@@ -1147,6 +1154,7 @@ namespace PIC_Simulator
             return new ushort[] { (ushort)(address | (rp0 << 7)) };
         }
 
+        // Gibt den Wert bei Reset zurück
         internal byte GetResetValue(byte address)
         {
             switch (address)
@@ -1166,6 +1174,7 @@ namespace PIC_Simulator
             }
         }
 
+        // Methode um Speicher mit Standardwerten zu beschreiben
         internal void ClearMemory()
         {
             for (int i = 0; i <= 0xFF; i++)
@@ -1175,6 +1184,7 @@ namespace PIC_Simulator
             this.OnPropertyChanged("StatusRegister");
         }
 
+        // Methode um Speicher zu initialisieren
         private void InitializeMemory()
         {
             for (int i = 0; i <= 0xFF; i++)
