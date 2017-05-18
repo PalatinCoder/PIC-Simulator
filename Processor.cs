@@ -973,6 +973,7 @@ namespace PIC_Simulator
         internal byte StatusRegister { get { return this.GetFile(0x03); } }
 
         internal ObservableCollection<Utility.BindableByte> Memory = new ObservableCollection<Utility.BindableByte>();
+        internal Collection<Byte> EEPROM = new Collection<byte>();
         private ushort pc = 0;
         internal ushort PC
         {
@@ -1058,6 +1059,7 @@ namespace PIC_Simulator
         internal MemoryController(Action EnableWaitCyclesCallback)
         {
             this.InitializeMemory();
+            this.InitializeEEPROM();
             this.EnableWaitCyclesCallback = EnableWaitCyclesCallback;
         }
 
@@ -1069,6 +1071,8 @@ namespace PIC_Simulator
         internal byte GetFile(ushort address)
         {
             int index = DecodeAddress(address)[0];
+            if (index == 0x08)
+                return ReadEEPROM();
             return this.Memory[index];
         }
 
@@ -1084,7 +1088,7 @@ namespace PIC_Simulator
             if (address == 0x07 || address == 0x87) return;
             if (address >= 0x50 && address <= 0x7F) return;
             if (address >= 0xD0 && address <= 0xFF) return;
-
+            
             if (address == 0x01)
             {
                 // Wenn Timer direkt (vom ausgeführten Code) bearbeitet wird
@@ -1135,12 +1139,44 @@ namespace PIC_Simulator
 
                 this.Memory[element] = value;
 
+                if (element == 0x88)
+                {
+                    WriteEEPROM();
+                }
+
                 // Verschiedene Register in GUI updaten
                 if (element == 0x03) this.OnPropertyChanged("StatusRegister");
                 if (element == 0x05) this.OnPropertyChanged("PortA");
                 if (element == 0x06) this.OnPropertyChanged("PortB");
                 if (element == 0x85) this.OnPropertyChanged("TrisA");
                 if (element == 0x86) this.OnPropertyChanged("TrisB");
+            }
+        }
+
+        /// <summary>
+        /// Methode um vom EEPROM zu lesen
+        /// </summary>
+        /// <returns>Wert an der abgefragten Adresse im EEPROM</returns>
+        internal byte ReadEEPROM()
+        {
+            if (GetBit(0x88, 0) == 1)
+                return EEPROM[Memory[0x09]];
+            return 0;
+        }
+
+        /// <summary>
+        /// Methode um EEPROM zu beschreiben
+        /// </summary>
+        internal void WriteEEPROM()
+        {
+            byte EECON = GetFile(0x88);
+            byte WR = GetBit(0x88, 1);
+            byte WREN = GetBit(0x88, 2);
+            if (GetBit(0x88, 1) == 1 && GetBit(0x88, 2) == 1)
+            {
+                EEPROM[Memory[0x09]] = Memory[0x08];
+                ClearBit(0x88, 1);
+                SetBit(0x88, 4);
             }
         }
 
@@ -1251,6 +1287,14 @@ namespace PIC_Simulator
             for (int i = 0; i <= 0xFF; i++)
             {
                 this.Memory.Add(GetResetValue((byte)i));
+            }
+        }
+
+        private void InitializeEEPROM()
+        {
+            for (int i = 0; i <= 0x3F; i++)
+            {
+                this.EEPROM.Add(0);
             }
         }
     }
