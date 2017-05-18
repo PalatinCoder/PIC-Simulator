@@ -55,6 +55,10 @@ namespace PIC_Simulator
             tmpPORTA = tmpINTCON = 0;
         }
 
+        /// <summary>
+        /// Methode die den aktuellen OpCode zurückgibt
+        /// </summary>
+        /// <returns></returns>
         private ushort GetOpcode()
         {
             ushort pc = this.memController.PC;
@@ -73,6 +77,9 @@ namespace PIC_Simulator
             this.Step();
         }
 
+        /// <summary>
+        /// Methode um einen Opcode einzulesen und auszuführen
+        /// </summary>
         public void Step()
         {
             if (Interrupt()) return;
@@ -95,6 +102,9 @@ namespace PIC_Simulator
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
         }
 
+        /// <summary>
+        /// Methode um Watchdog Timer zu erhöhen
+        /// </summary>
         private void WatchdogTick()
         {
             this.Watchdog += this.Clock.Interval.Ticks;
@@ -123,18 +133,28 @@ namespace PIC_Simulator
                 }
         }
 
+        /// <summary>
+        /// Methode um Speicher zurückzusetzen
+        /// </summary>
         internal void Reset()
         {
-            // TODO Richtige reset Werte
+            // Memory auf Standardwerte zurücksetzen
             this.memController.ClearMemory();
+
+            // Spezielle Variablen zurücksetzen
             this.memController.PC = 0;
             this.Wreg = 0;
-            ViewInterface.ResetStopwatch();
             this.Watchdog = 0;
             this._isSleeping = false;
+
+            // Stopwatch zurücksetzen und erste Zeile highlighten
+            ViewInterface.ResetStopwatch();
             ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[0].LineNumber - 1);
         }
 
+        /// <summary>
+        /// Methode um den Timer0 ticken zu lassen
+        /// </summary>
         private void Tmr0Tick()
         {
             // Prescaler holen
@@ -188,6 +208,9 @@ namespace PIC_Simulator
             }
         }
 
+        /// <summary>
+        /// Methode um den Timer zu erhöhen
+        /// </summary>
         private void IncTimer()
         {
             byte timer = this.memController.GetFile(0x01);
@@ -201,6 +224,10 @@ namespace PIC_Simulator
             }
         }
 
+        /// <summary>
+        /// Methode um auf Interrupts zu prüfen und diese zu behandlen
+        /// </summary>
+        /// <returns>Liegt ein Interrupt vor</returns>
         private bool Interrupt()
         {
             if (CheckForInterrupts())
@@ -217,6 +244,10 @@ namespace PIC_Simulator
             return false;
         }
 
+        /// <summary>
+        /// Methode, die prüft, ob interrupts vorliegen
+        /// </summary>
+        /// <returns>Liegt ein Interrupt vor</returns>
         private bool CheckForInterrupts()
         {
             // Testen ob GIE Bit gesetzt ist (ansonsten nicht auf Interrupts prüfen)
@@ -235,6 +266,9 @@ namespace PIC_Simulator
             return false;
         }
 
+        /// <summary>
+        /// Methode um Timer-Waitcycles zu aktivieren
+        /// </summary>
         private void EnableWaitCycles()
         {
             this.timer_waitcycles = 2;
@@ -925,7 +959,9 @@ namespace PIC_Simulator
         void ResetStopwatch();
     }
 
-
+    /// <summary>
+    /// Memorycontroller, der die Verwaltung des Speichers & EEPROMS übernimmt
+    /// </summary>
     internal class MemoryController : INotifyPropertyChanged
     {
         Action EnableWaitCyclesCallback;
@@ -1025,12 +1061,22 @@ namespace PIC_Simulator
             this.EnableWaitCyclesCallback = EnableWaitCyclesCallback;
         }
 
+        /// <summary>
+        /// Methode um Wert von Speicheradresse zu lesen
+        /// </summary>
+        /// <param name="address">Adresse</param>
+        /// <returns>Wert an der angegebenen Speicheradresse</returns>
         internal byte GetFile(ushort address)
         {
             int index = DecodeAddress(address)[0];
             return this.Memory[index];
         }
 
+        /// <summary>
+        /// Methode um Wert an Speicheradresse zu schreiben
+        /// </summary>
+        /// <param name="address">Adresse</param>
+        /// <param name="value">Wert</param>
         internal void SetFile(ushort address, byte value)
         {
             // Nicht-implementierte memory locations dürfen nicht beschrieben werden!
@@ -1098,8 +1144,10 @@ namespace PIC_Simulator
             }
         }
 
-        // Methode um den Timer zu setzen. Soll nur vom Prozessor aufgerufen werden.
-        // Hierbei gibt es keine Waitcycles!
+        /// <summary>
+        /// Methode um den Timer zu setzen. Soll nur vom Prozessor aufgerufen werden. Hierbei gibt es keine Waitcycles!
+        /// </summary>
+        /// <param name="value">Wert, auf den der Timer gesetzt wird</param>
         internal void SetTimer(byte value)
         {
             this.Memory[0x01] = value;
@@ -1129,6 +1177,11 @@ namespace PIC_Simulator
             this.SetFile(address, value);
         }
 
+        /// <summary>
+        /// Setzt ein Bit an einer Adresse auf 0
+        /// </summary>
+        /// <param name="address">Speicheradresse</param>
+        /// <param name="bit">Bit</param>
         internal void ClearBit(ushort address, byte bit)
         {
             byte value = this.GetFile(address);
@@ -1154,7 +1207,11 @@ namespace PIC_Simulator
             return new ushort[] { (ushort)(address | (rp0 << 7)) };
         }
 
-        // Gibt den Wert bei Reset zurück
+        /// <summary>
+        /// Gibt den Wert bei Reset zurück
+        /// </summary>
+        /// <param name="address">Speicheradresse</param>
+        /// <returns>Standardwert an bestimmter Adresse</returns>
         internal byte GetResetValue(byte address)
         {
             switch (address)
@@ -1174,7 +1231,9 @@ namespace PIC_Simulator
             }
         }
 
-        // Methode um Speicher mit Standardwerten zu beschreiben
+        /// <summary>
+        /// Methode um Speicher mit Standardwerten zu beschreiben
+        /// </summary>
         internal void ClearMemory()
         {
             for (int i = 0; i <= 0xFF; i++)
@@ -1184,7 +1243,9 @@ namespace PIC_Simulator
             this.OnPropertyChanged("StatusRegister");
         }
 
-        // Methode um Speicher zu initialisieren
+        /// <summary>
+        /// Methode um Speicher zu initialisieren
+        /// </summary>
         private void InitializeMemory()
         {
             for (int i = 0; i <= 0xFF; i++)
