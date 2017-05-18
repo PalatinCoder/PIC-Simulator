@@ -102,7 +102,7 @@ namespace PIC_Simulator
             if (psa == 1) PostscalerRatio = (ushort)(1 << (PostscalerRateSelect)); // = 2 ^ PrescalerRateSelect
 
             long BaseTicks = 180000; // 18ms
-#if DEBUG
+#if DEBUG_WDT
             BaseTicks = 1800; // damit's beim debuggen schneller geht ;)
 #endif
             if (this.Watchdog >= (BaseTicks * PostscalerRatio))
