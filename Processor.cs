@@ -482,6 +482,9 @@ namespace PIC_Simulator
             else
                 this.Wreg = result;
 
+            // Z-Flag handling
+            handleZeroFlag(result);
+
             this.memController.PC++;
         }
 
