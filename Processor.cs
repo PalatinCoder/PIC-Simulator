@@ -274,6 +274,15 @@ namespace PIC_Simulator
             this.timer_waitcycles = 2;
         }
 
+        private void handleZeroFlag(ushort value)
+        {
+            // Z-Flag handling
+            if (value == 0)
+                this.memController.SetZeroFlag();
+            else
+                this.memController.ClearZeroFlag();
+        }
+
         /// <summary>
         /// Diese Routine dekodiert den aktuellen Befehl und ruft die entsprechende
         /// Subroutine zur Ausführung des Maschinenbefehls auf.
@@ -418,10 +427,7 @@ namespace PIC_Simulator
                 this.memController.ClearBit(0x03, 0);
 
             // Z-Flag handling
-            if (result == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(result);
 
             if ((this.GetOpcode() & 0x0080) > 0)
                 this.memController.SetFile(address, (byte)result);
@@ -443,10 +449,7 @@ namespace PIC_Simulator
                 this.Wreg = result;
 
             // Z-Flag handling
-            if (result == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(result);
 
             this.memController.PC++;
         }
@@ -494,10 +497,7 @@ namespace PIC_Simulator
                 this.Wreg = value;
 
             // Z-Flag handling
-            if (value == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(value);
 
             this.memController.PC++;
         }
@@ -534,10 +534,7 @@ namespace PIC_Simulator
                 this.Wreg = result;
 
             // Z-Flag handling
-            if (result == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(result);
 
             this.memController.PC++;
         }
@@ -574,10 +571,7 @@ namespace PIC_Simulator
                 this.Wreg = result;
 
             // Z-Flag handling
-            if (result == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(result);
 
             this.memController.PC++;
         }
@@ -594,10 +588,7 @@ namespace PIC_Simulator
                 this.Wreg = value;
 
             // Z-Flag handling
-            if (value == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(value);
 
             this.memController.PC++;
         }
@@ -677,10 +668,7 @@ namespace PIC_Simulator
                 this.memController.SetBit(0x03, 1);
 
             // Z-Flag handling
-            if (result == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(result);
 
             // In W-reg oder file
             if ((this.GetOpcode() & 0x0080) > 0)
@@ -789,10 +777,7 @@ namespace PIC_Simulator
                 this.memController.ClearBit(0x03, 0);
 
             //Set Z Bit
-            if (result == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(result);
 
             this.Wreg = (byte)result;
 
@@ -853,10 +838,7 @@ namespace PIC_Simulator
             this.Wreg = (byte)(literal | this.Wreg);
 
             // Z-Flag handling
-            if (this.Wreg == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(this.Wreg);
 
             this.memController.PC++;
         }
@@ -924,10 +906,7 @@ namespace PIC_Simulator
                 this.memController.SetBit(0x03, 1);
 
             // Z-Flag handling
-            if (result == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(result);
 
             this.Wreg = result;
 
@@ -940,10 +919,7 @@ namespace PIC_Simulator
             this.Wreg = (byte)(literal ^ this.Wreg);
 
             // Z-Flag handling
-            if (this.Wreg == 0)
-                this.memController.SetZeroFlag();
-            else
-                this.memController.ClearZeroFlag();
+            handleZeroFlag(this.Wreg);
 
             this.memController.PC++;
         }
