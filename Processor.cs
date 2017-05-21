@@ -406,7 +406,7 @@ namespace PIC_Simulator
             ushort result = (ushort)(this.Wreg + value);
 
             // DC-Flag handling
-            if (value <= 0x0F && this.Wreg <= 0x0F && result >= 0x10)
+            if (((value & 0x0F) + (this.Wreg & 0x0F)) > 15)
                 this.memController.SetBit(0x03, 1);
             else
                 this.memController.ClearBit(0x03, 1);
