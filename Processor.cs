@@ -927,7 +927,7 @@ namespace PIC_Simulator
             this.memController.PC++;
         }
 #pragma warning restore IDE1006 // Benennungsstile
-        #endregion
+#endregion
     }
 
     interface ISourcecodeViewInterface
