@@ -829,9 +829,7 @@ namespace PIC_Simulator
             //WDT auf 0x00 setzen
             this.Watchdog = 0;
             //WDT prescaler auf 0 setzen
-            this.memController.ClearBit(0x81, 0);
-            this.memController.ClearBit(0x81, 1);
-            this.memController.ClearBit(0x81, 2);
+            this.timerPrescalerCounter = 0;
 
             this.memController.PC++;
         }
@@ -889,9 +887,7 @@ namespace PIC_Simulator
             // 0x00 -> WDT
             this.Watchdog = 0;
             // 0 -> WDT prescaler
-            this.memController.ClearBit(0x81, 0);
-            this.memController.ClearBit(0x81, 1);
-            this.memController.ClearBit(0x81, 2);
+            this.timerPrescalerCounter = 0;
             // Set TO (Time out bit)
             this.memController.SetBit(0x03, 4);
             // Clear PD (Power Down bit)
