@@ -178,8 +178,10 @@ namespace PIC_Simulator
                     if (psa == 0) this.timerPrescalerCounter = 0;
                     IncTimer();
                 }
-                else
+                else if (timer_waitcycles > 0)
+                {
                     timer_waitcycles--;
+                }
 
                 this.timerPrescalerCounter++;
             }
