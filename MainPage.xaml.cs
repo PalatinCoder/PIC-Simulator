@@ -27,8 +27,8 @@ namespace PIC_Simulator
 
         private async void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new MessageDialog("Hier kommt das PDF.");
-            await dialog.ShowAsync();
+            StorageFile pdf = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\HilfedokuPicSim.pdf");
+            await Windows.System.Launcher.LaunchFileAsync(pdf);
         }
 
         private async void OpenFileChooser_Click(object sender, RoutedEventArgs e)
