@@ -143,12 +143,15 @@ namespace PIC_Simulator
         }
 
         /// <summary>
-        /// Methode um Speicher zurückzusetzen
+        /// Methode um den PIC zurückzusetzen
         /// </summary>
         internal void Reset()
         {
             // Memory auf Standardwerte zurücksetzen
             this.memController.ClearMemory();
+
+            // Stack zurücksetzen
+            this.Stack.Clear();
 
             // Spezielle Variablen zurücksetzen
             this.memController.PC = 0;
