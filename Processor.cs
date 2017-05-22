@@ -84,7 +84,11 @@ namespace PIC_Simulator
         {
             if (Interrupt()) return;
             this.ViewInterface.IncreaseStopwatch(this.Clock.Interval);
-            WatchdogTick();
+            if (WatchdogTick())
+            {
+                ViewInterface.SetCurrentSourcecodeLine(this.ProgramMemory[memController.PC].LineNumber - 1);
+                return;
+            }
             if (this._isSleeping) return;
 
             Tmr0Tick();
@@ -105,7 +109,7 @@ namespace PIC_Simulator
         /// <summary>
         /// Methode um Watchdog Timer zu erhöhen
         /// </summary>
-        private void WatchdogTick()
+        private bool WatchdogTick()
         {
             this.Watchdog += this.Clock.Interval.Ticks;
 
@@ -120,6 +124,7 @@ namespace PIC_Simulator
             BaseTicks = 1800; // damit's beim debuggen schneller geht ;)
 #endif
             if (this.Watchdog >= (BaseTicks * PostscalerRatio))
+            {
                 if (this._isSleeping)
                 {
                     this._isSleeping = false;
@@ -131,6 +136,10 @@ namespace PIC_Simulator
                     this.Reset();
                     this.memController.ClearBit(0x03, 4); // PD bit
                 }
+                return true;
+            }
+
+            return false;    
         }
 
         /// <summary>
